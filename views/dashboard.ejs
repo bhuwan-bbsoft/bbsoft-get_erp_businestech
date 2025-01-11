@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <title>Dashboard - Sales & Quotation System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <%- include('partials/navbar') %>
+
+    <div class="flex">
+      <div class="w-[10%]"><%- include('partials/menu') %></div>
+      <div class="w-[90%] mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+
+        <!-- show only is userLevel is user -->
+        <% if(userLevel === 2) { %>
+        <!-- user target  -->
+        <div class="mb-4">
+          <div
+            class="flex justify-between border p-6 rounded-lg shadow-lg bg-white"
+          >
+            <div class="flex w-1/2 flex-col gap-4">
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                  >Name</span
+                ><span class="text-lg text-gray-600">:</span
+                ><span class="text-gray-800"><%- currentUser.name %></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                  >Designation</span
+                ><span class="text-lg text-gray-600">:</span
+                ><span class="text-gray-800"><%- financialTarget[0].designation %></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                  >Role</span
+                ><span class="text-lg text-gray-600">:</span
+                ><span class="text-gray-800"
+                  ><%- financialTarget[0].role %></span
+                >
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                  >Manager</span
+                ><span class="text-lg text-gray-600">:</span
+                ><span class="text-gray-800"><%- financialTarget[0].sales_manager %></span>
+              </div>
+            </div>
+            <div class="flex w-1/2 flex-col gap-6">
+              <div class="flex items-center space-x-2 text-lg text-gray-800">
+                <span>Financial Year:</span
+                ><span class="font-semibold"><%- financialTarget[0].financial_year %></span>
+              </div>
+              <div class="mr-5 flex items-center gap-6">
+                <div
+                  class="flex h-32 w-32 items-center justify-center rounded-full bg-indigo-600 text-white text-2xl font-bold shadow-md"
+                >
+                  
+<!-- ----------------------- -->
+ 
+chart
+
+<!-- ----------------------- -->
+
+
+                </div>
+                <div class="flex flex-col gap-4">
+                  <div class="flex items-center space-x-2">
+                    <span
+                      class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                      >Target</span
+                    ><span class="text-lg text-gray-600">:</span
+                    ><span class="text-green-600 font-bold" id="business_target"></span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span
+                      class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                      >Achieved</span
+                    ><span class="text-lg text-gray-600">:</span
+                    ><span class="text-blue-600 font-bold" id="achieved_till_date"></span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span
+                      class="text-lg font-semibold text-gray-700 min-w-[7rem]"
+                      >Balance to go</span
+                    ><span class="text-lg text-gray-600">:</span
+                    ><span class="text-red-600 font-bold" id="balance_to_go"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- tab  -->
+        <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+          <ul
+            class="flex flex-wrap -mb-px text-sm font-medium text-center"
+            id="default-tab"
+            data-tabs-toggle="#default-tab-content"
+            role="tablist"
+          >
+            <li class="me-2" role="presentation">
+              <button
+                class="inline-block p-4 border-b-2 rounded-t-lg"
+                id="sales-tab"
+                data-tabs-target="#sales"
+                type="button"
+                role="tab"
+                aria-controls="sales"
+                aria-selected="false"
+              >
+                Sales
+              </button>
+            </li>
+            <li class="me-2" role="presentation">
+              <button
+                class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                id="quotation-tab"
+                data-tabs-target="#quotation"
+                type="button"
+                role="tab"
+                aria-controls="quotation"
+                aria-selected="false"
+              >
+                Quotation
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div id="default-tab-content">
+          <div
+            class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+            id="sales"
+            role="tabpanel"
+            aria-labelledby="sales-tab"
+          >
+            <div>
+              <div class="flex  justify-end">
+                <div class="space-x-1 mb-3">
+                  <button
+                    onclick="generatePDF(<%= JSON.stringify(sales) %>, 'sale' )"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-file-type-pdf"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                      <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" />
+                      <path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6" />
+                      <path d="M17 18h2" />
+                      <path d="M20 15h-3v6" />
+                      <path
+                        d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    onclick="generateExcel('sales', <%= JSON.stringify(sales) %>, <%= JSON.stringify(quotations) %>)"
+                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-file-type-xls"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                      <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" />
+                      <path d="M4 15l4 6" />
+                      <path d="M4 21l4 -6" />
+                      <path
+                        d="M17 20.25c0 .414 .336 .75 .75 .75h1.25a1 1 0 0 0 1 -1v-1a1 1 0 0 0 -1 -1h-1a1 1 0 0 1 -1 -1v-1a1 1 0 0 1 1 -1h1.25a.75 .75 0 0 1 .75 .75"
+                      />
+                      <path d="M11 15v6h3" />
+                    </svg>
+                  </button>
+
+                  <button
+                    onclick="printData('sales' , <%= JSON.stringify(sales) %>, <%= JSON.stringify(quotations) %>)"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-printer"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path
+                        d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"
+                      />
+                      <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                      <path
+                        d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                  <thead>
+                    <tr class="[&>th]:py-2 [&>th]:px-4 [&>th]:border-b">
+                      <th>Date</th>
+                      <th>Product/Service</th>
+                      <th>Additional Details</th>
+                      <th>Tally S.No (Batch)</th>
+                      <th>Edition</th>
+                      <th>Amount Billed (&#x20b9;)</th>
+                      <th>GST (&#x20b9;)</th>
+                      <th>Total Amount Billed (&#x20b9;)</th>
+                      <th>Next Renewal Date</th>
+                      <th>Remarks to type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- <div><%= userId %></div> -->
+                    <% sales.forEach(sale => { %>
+                    <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b">
+                      <td class="min-w-[8rem]">
+                        <%= sale.date.toISOString().split('T')[0] %>
+                      </td>
+                      <td><%= sale.product_and_services %></td>
+                      <td><%= %></td>
+                      <td><%= sale.additional_description %></td>
+                      <td><%= sale.tally_serial_number %></td>
+                      <td><%= sale.edition %></td>
+                      <td><%= sale.amount_billed %></td>
+                      <td><%= sale.gst %></td>
+                      <td><%= sale.total_amount_billed %></td>
+                      <td class="min-w-[8rem]">
+                        <%= new
+                        Date(sale.next_renewal_date).toISOString().split('T')[0]
+                        %>
+                      </td>
+                      <td><%= sale.remarks %></td>
+                    </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div
+            class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+            id="quotation"
+            role="tabpanel"
+            aria-labelledby="quotation-tab"
+          >
+            <div>
+              <div class="flex justify-end">
+                <div class="space-x-1 mb-3">
+                  <!-- PDF Button -->
+                  <button
+                    onclick="generatePDF(<%= JSON.stringify(quotations) %>, 'quotation', company)"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-file-type-pdf"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                      <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" />
+                      <path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6" />
+                      <path d="M17 18h2" />
+                      <path d="M20 15h-3v6" />
+                      <path
+                        d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    onclick="generateExcel('quotations', <%= JSON.stringify(sales) %>, <%= JSON.stringify(quotations) %>)"
+                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-file-type-xls"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                      <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" />
+                      <path d="M4 15l4 6" />
+                      <path d="M4 21l4 -6" />
+                      <path
+                        d="M17 20.25c0 .414 .336 .75 .75 .75h1.25a1 1 0 0 0 1 -1v-1a1 1 0 0 0 -1 -1h-1a1 1 0 0 1 -1 -1v-1a1 1 0 0 1 1 -1h1.25a.75 .75 0 0 1 .75 .75"
+                      />
+                      <path d="M11 15v6h3" />
+                    </svg>
+                  </button>
+
+                  <button
+                    onclick="printData('quotations' , <%= JSON.stringify(sales) %>, <%= JSON.stringify(quotations) %>)"
+                    id="quotations"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-printer"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path
+                        d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"
+                      />
+                      <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                      <path
+                        d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                  <thead>
+                    <tr class="[&>th]:py-2 [&>th]:px-4 [&>th]:border-b">
+                      <th>Date</th>
+                      <th>Product/Service</th>
+                      <th>Additional Description</th>
+                      <th>Tally S.No (Batch)</th>
+                      <th>Edition</th>
+                      <th>Amount Billed (&#x20b9;)</th>
+                      <th>GST (&#x20b9;)</th>
+                      <th>Total Amount Billed (&#x20b9;)</th>
+                      <th>Next Renewal Date</th>
+                      <th>Remarks to Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% quotations.forEach(quotation => { %>
+                    <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b">
+                      <td class="min-w-[8rem]">
+                        <%= quotation.date.toISOString().split('T')[0] %>
+                      </td>
+                      <td><%= quotation.product_and_services %></td>
+                      <td><%= quotation.additional_description %></td>
+                      <td><%= quotation.tally_serial_number %></td>
+                      <td><%= quotation.edition %></td>
+                      <td><%= quotation.amount_billed %></td>
+                      <td><%= quotation.gst %></td>
+                      <td><%= quotation.total_amount_billed %></td>
+                      <td class="flex flex-col min-w-[8rem]">
+                        <%= new
+                        Date(quotation.next_renewal_date).toISOString().split('T')[0]
+                        %>
+                      </td>
+                      <td><%= quotation.remarks %></td>
+                    </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   <script>
+     function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      const financialTargetJs = <%- JSON.stringify(financialTarget) %>;
+      const userLevelJs = <%- userLevel %>;
+
+      if(userLevelJs!== 1 && financialTargetJs && financialTargetJs.length>0){
+        const businessTarget =   financialTargetJs[0].business_target;
+        const achievedTillDate =   financialTargetJs[0].achieved_till_date ;
+        const balanceToGo =   financialTargetJs[0].balance_to_go ;
+
+        // Format the values and update the DOM
+        document.getElementById("business_target").textContent = `₹ ${formatNumberWithCommas(businessTarget)}`;
+        document.getElementById("achieved_till_date").textContent = `₹ ${formatNumberWithCommas(achievedTillDate)}`;
+        document.getElementById("balance_to_go").textContent = `₹ ${formatNumberWithCommas(balanceToGo)}`;
+      }
+
+      
+   </script>
+
+
+    <%- include('partials/companyModel') %> <%-
+    include('partials/editAccountModel') %> <%-
+    include('partials/manageUserModel') %>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+      // Function to open the company modal
+      function openCompanyModal() {
+        document.getElementById("companyModal").classList.remove("hidden");
+      }
+
+      // Function to close the company modal
+      function closeCompanyModal() {
+        document.getElementById("companyModal").classList.add("hidden");
+      }
+
+      // Function to open the Edit Account modal
+      function openEditAccountModal() {
+        document.getElementById("editAccountModal").classList.remove("hidden");
+      }
+
+      // Function to close the Edit Account modal
+      function closeEditAccountModal() {
+        document.getElementById("editAccountModal").classList.add("hidden");
+      }
+
+      // Function to open Manage User Modal
+      function openManageUserModel() {
+        document.getElementById("manageUserModel").classList.remove("hidden");
+      }
+
+      // Function to close Manage User Modal
+      function closeManageUserModel() {
+        document.getElementById("manageUserModel").classList.add("hidden");
+      }
+
+      // Function to open Add New User Modal
+      function openAddNewUserModel() {
+        document.getElementById("addNewUserModel").classList.remove("hidden");
+      }
+
+      // Function to close Add New User Modal
+      function closeAddNewUserModel() {
+        document.getElementById("addNewUserModel").classList.add("hidden");
+      }
+
+      // Function to open Edit User Modal
+      function openEditUserModel(userId) {
+        // Optionally, populate the form fields with the user's details using the userId.
+        document.getElementById("editUserModel").classList.remove("hidden");
+      }
+
+      // Function to close Edit User Modal
+      function closeEditUserModel() {
+        document.getElementById("editUserModel").classList.add("hidden");
+      }
+
+      // Function to delete a user
+      function deleteUser(userId) {
+        // Here you can make an API call to delete the user or handle it however you'd like.
+        console.log(`User ${userId} deleted`);
+      }
+    </script>
+
+    <script>
+      const company = {
+        name: "ABC Pvt Ltd",
+        address: "123, Business Street, City, Country",
+        city: "City",
+        state: "State",
+        country: "Country",
+        gstin: "GSTIN123456",
+        email: "contact@abc.com",
+        mobile: "+91 123 456 7890",
+        website: "www.abc.com",
+        pan_number: "ABCDE1234F",
+      };
+
+      function generatePDF(data, type, company) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // A4 page size (210mm x 297mm)
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+
+        // Get current date in yyyy-mm-dd format
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split("T")[0]; // Get current date in yyyy-mm-dd format
+
+        // Add company information at the top
+        doc.setFontSize(10); // Smaller font size
+        doc.text(company.name, 20, 20); // Company Name
+        doc.text(company.address, 20, 25); // Address
+        doc.text(
+          `City: ${company.city}, State: ${company.state}, Country: ${company.country}`,
+          20,
+          30
+        ); // City, State, Country
+        doc.text(`GSTIN: ${company.gstin}`, 20, 35); // GSTIN
+        doc.text(`Email: ${company.email} | Mobile: ${company.mobile}`, 20, 40); // Email and Mobile
+        doc.text(`Website: ${company.website}`, 20, 45); // Website
+        doc.text(`PAN: ${company.pan_number}`, 20, 50); // PAN Number
+
+        // Add the report title
+        const reportTitle = `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } Report`;
+        doc.setFontSize(12); // Slightly bigger font for title
+        doc.text(
+          reportTitle,
+          pageWidth / 2 - doc.getTextWidth(reportTitle) / 2,
+          55
+        ); // Centered title
+
+        // Line separator after the company info and title
+        doc.setLineWidth(0.5);
+        doc.line(20, 60, pageWidth - 20, 60);
+
+        // Add the headers for the table (with smaller font size)
+        let yPos = 65;
+        const header = [
+          "Date",
+          "Product and Services",
+          "Additional description",
+          "Tally Serial Number",
+          "Edition",
+          "Amount Billed",
+          "GST",
+          "Total Amount Billed",
+          "Next Renewal Date",
+          "Remarks",
+        ];
+        const columnWidths = [15, 20, 30, 20, 10, 20, 20, 20, 10, 10]; // Adjust the widths based on your preference
+
+        doc.setFontSize(8); // Smaller font size for table header
+        header.forEach((column, index) => {
+          doc.text(
+            column,
+            20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
+            yPos
+          );
+          doc.rect(
+            20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
+            yPos - 5,
+            columnWidths[index],
+            5
+          ); // Add border for each cell
+        });
+
+        yPos += 5; // Space after the header row
+
+        // Add the table data for sales or quotations
+        doc.setFontSize(7); // Smaller font for table data
+        doc.setTex;
+        data.forEach((item) => {
+          let rowHeight = 10;
+
+          // Format the date and next renewal date
+          const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            return (
+              date.getFullYear() +
+              "-" +
+              ("0" + (date.getMonth() + 1)).slice(-2) +
+              "-" +
+              ("0" + date.getDate()).slice(-2)
+            ); // yyyy-mm-dd format
+          };
+
+          // Format the date and next_renewal_date fields
+          const formattedDateValue = formatDate(item.date);
+          const formattedNextRenewalDate = formatDate(item.next_renewal_date);
+
+          header.forEach((column, index) => {
+            const cellValue =
+              column === "Date"
+                ? formattedDateValue
+                : column === "Next Renewal"
+                ? formattedNextRenewalDate
+                : item[column.toLowerCase().replace(" ", "_")];
+            doc.text(
+              cellValue ? cellValue.toString() : "-",
+              20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
+              yPos
+            );
+            doc.rect(
+              20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
+              yPos - 5,
+              columnWidths[index],
+              rowHeight
+            );
+          });
+          yPos += rowHeight; // Add spacing for the next row
+
+          // Ensure the content doesn't exceed the A4 page size
+          if (yPos > pageHeight - 20) {
+            doc.addPage();
+            yPos = 20; // Reset the position for the new page
+          }
+        });
+
+        // Save the PDF with dynamic file name based on the type and current date/time
+        const fileName = `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        }_report_${formattedDate}.pdf`;
+        doc.save(fileName);
+      }
+
+      function generateExcel(dataType, sales, quotations) {
+        const wb = XLSX.utils.book_new();
+        let data;
+        let sheetName;
+
+        function filterFieldsAndFormatDates(data) {
+          return data.map((item) => {
+            // Remove unwanted fields
+            const {
+              id,
+              user_role,
+              created_by,
+              created_date,
+              updated_by,
+              updated_date,
+              ...filteredItem
+            } = item;
+
+            if (filteredItem.date) {
+              filteredItem.date = new Date(filteredItem.date)
+                .toISOString()
+                .split("T")[0];
+            }
+            if (filteredItem.next_renewal_date) {
+              filteredItem.next_renewal_date = new Date(
+                filteredItem.next_renewal_date
+              )
+                .toISOString()
+                .split("T")[0];
+            }
+
+            return filteredItem;
+          });
+        }
+
+        if (dataType === "sales") {
+          data = filterFieldsAndFormatDates(sales);
+          sheetName = "Sales";
+        } else if (dataType === "quotations") {
+          data = filterFieldsAndFormatDates(quotations);
+          sheetName = "Quotations";
+        }
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+
+        const timestamp = new Date()
+          .toISOString()
+          .replace(/[-:T.]/g, "")
+          .slice(0, 14);
+
+        const filename = `${dataType}_report_${timestamp}.xlsx`;
+
+        XLSX.writeFile(wb, filename);
+      }
+
+      function printData(sectionId, sales, quotations) {
+        // Get the section content to print by ID
+        const sectionContent = document.getElementById(sectionId).innerHTML;
+
+        // Create a new window for printing
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write("<html><head><title>Print</title>");
+
+        // Add any linked stylesheets for consistent styling
+        const stylesheets = Array.from(
+          document.querySelectorAll('link[rel="stylesheet"]')
+        );
+        stylesheets.forEach((link) => {
+          printWindow.document.write(
+            `<link rel="stylesheet" href="${link.href}">`
+          );
+        });
+
+        printWindow.document.write("</head><body>");
+
+        printWindow.document.write(`
+                <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;  width: 100%;">
+    <h1 style="font-size: 1.5rem; color: #333; font-weight: bold; margin-bottom: 10px;">ABC Pvt Ltd</h1>
+    <p style="color: #555;">123, Business Street, City, Country</p>
+
+    <div style="display: flex; gap: 10px; text-align: left;justify-content:center;">
+      <div style="display: flex; align-items: center; color: #555;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.071 4.514a3 3 0 003.858 0L21 8m0 0V5a2 2 0 00-2-2H5a2 2 0 00-2 2v3m18 0l-7.071 4.514a3 3 0 01-3.858 0L3 8"></path>
+        </svg>
+        contact@abc.com
+      </div>
+      <div style="display: flex; align-items: center; color: #555;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10l1-4a2 2 0 012-2h2a2 2 0 012 2v4M7 7h.01M4 10v6a2 2 0 002 2h2a2 2 0 002-2v-6m5 0h2a2 2 0 012 2v4a2 2 0 01-2 2h-2m-6 0h.01M3 10h.01"></path>
+        </svg>
+        +91 123 456 7890
+      </div>
+      <div style="display: flex; align-items: center; color: #555;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a9 9 0 00-6.7 15.3A8.961 8.961 0 0112 21a8.961 8.961 0 006.7-2.7A9 9 0 0012 3z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9"></path>
+        </svg>
+        www.abc.com
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; color: #555; font-size: 1.2rem; justify-content:center; display:flex; gap:10px;">
+      <p><strong>GSTIN:</strong> GSTIN123456</p>
+      <p><strong>PAN:</strong> ABCDE1234F</p>
+    </div>
+  </div>
+            `);
+
+        printWindow.document.write("<table border=1>");
+        printWindow.document.write("<tr>");
+        printWindow.document.write("<th> Date </th>");
+        printWindow.document.write("<th> Products/Services </th>");
+        printWindow.document.write("<th> Addl. Description </th>");
+        printWindow.document.write("<th> Tally S.No (Batch) </th>");
+        printWindow.document.write("<th> Edition </th>");
+        printWindow.document.write("<th> Amount Billed </th>");
+        printWindow.document.write("<th> GST </th>");
+        printWindow.document.write("<th> Total Amount Billed </th>");
+        printWindow.document.write("<th> Next Renewal Date </th>");
+        printWindow.document.write("<th> Remarks of Type </th>");
+        printWindow.document.write("</tr>");
+
+        if (sectionId === "quotations") {
+          quotations.map((quotation, index) => {
+            printWindow.document.write("<tr>");
+            printWindow.document.write(
+              `<td> ${
+                new Date(quotation?.date).toISOString().split("T")[0]
+              } </td>`
+            );
+            printWindow.document.write(
+              `<td> ${quotation?.product_and_services} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${quotation?.additional_description} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${quotation?.tally_serial_number} </td>`
+            );
+            printWindow.document.write(`<td> ${quotation?.edition} </td>`);
+            printWindow.document.write(
+              `<td> ${quotation?.amount_billed} </td>`
+            );
+            printWindow.document.write(`<td> ${quotation?.gst} </td>`);
+            printWindow.document.write(
+              `<td> ${quotation?.total_amount_billed} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${
+                new Date(quotation.next_renewal_date)
+                  .toISOString()
+                  .split("T")[0]
+              } </td>`
+            );
+            printWindow.document.write(`<td> ${quotation?.remarks} </td>`);
+            printWindow.document.write("</tr>");
+          });
+        } else if ((selectionId = "sales")) {
+          sales.map((sale, index) => {
+            printWindow.document.write("<tr>");
+            printWindow.document.write(
+              `<td> ${new Date(sale?.date).toISOString().split("T")[0]} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${sale?.product_and_services} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${sale?.additional_description} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${sale?.tally_serial_number} </td>`
+            );
+            printWindow.document.write(`<td> ${sale?.edition} </td>`);
+            printWindow.document.write(`<td> ${sale?.amount_billed} </td>`);
+            printWindow.document.write(`<td> ${sale?.gst} </td>`);
+            printWindow.document.write(
+              `<td> ${sale?.total_amount_billed} </td>`
+            );
+            printWindow.document.write(
+              `<td> ${
+                new Date(sale.next_renewal_date).toISOString().split("T")[0]
+              } </td>`
+            );
+            printWindow.document.write(`<td> ${sale?.remarks} </td>`);
+            printWindow.document.write("</tr>");
+          });
+        }
+        printWindow.document.write("</table>");
+        printWindow.document.write("</body></html>");
+
+        // Close the document for rendering
+        printWindow.document.close();
+
+        // Trigger the print dialog
+        printWindow.print();
+
+        // Optional: Close the print window after printing
+        printWindow.onafterprint = () => {
+          printWindow.close();
+        };
+      }
+    </script>
+
+<!-- chart  -->
+    <script>
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  </body>
+</html>

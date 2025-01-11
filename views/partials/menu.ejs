@@ -1,0 +1,9 @@
+<div class="flex flex-col gap-2 mt-5 [&>div]:ml-10 [&>div]:py-2 [&>div]:px-4 [&>div]:bg-gray-500 [&>div]:text-white [&>div]:font-semibold [&>div]:rounded-lg [&>div]:cursor-pointer">
+    <% if(userLevel === 2){ %>
+        <div onclick="openEditAccountModal()">Edit Account</div>
+    <% } else if(userLevel === 1) { %>
+        <div onclick="openEditAccountModal()">Edit Account</div>
+        <div onclick="openCompanyModal()">Company</div>
+        <div onclick="openManageUserModel()">Manage User</div>
+    <% } %>
+</div>

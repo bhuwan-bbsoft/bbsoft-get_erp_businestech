@@ -1,0 +1,15 @@
+<nav class="bg-gray-800 p-4">
+    <div class="max-w-[95vw] mx-auto flex justify-between items-center ">
+        <a href="/" class="text-white text-2xl font-bold ">Sales & Quotation System</a>
+        <div class="space-x-4">
+            <% if (typeof userId !== 'undefined') { %>
+                <a href="/dashboard" class="text-white hover:text-gray-300">Dashboard</a>
+                <a href="/logout" class="text-white hover:text-gray-300">Logout</a>
+            <% } else { %>
+                <a href="/login" class="text-white hover:text-gray-300">Login</a>
+                <a href="/register" class="text-white hover:text-gray-300">Register</a>
+            <% } %>
+        </div>
+    </div>
+</nav>
+

@@ -1,0 +1,46 @@
+<!-- Edit Account Modal -->
+<div id="editAccountModal" class="fixed flex inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="modal-content bg-white p-6 rounded-lg w-[50rem]  max-h-screen overflow-auto shadow-xl">
+        <!-- Close Button -->
+        <div class="text-right">
+            <button onclick="closeEditAccountModal()" class="text-gray-500 hover:text-gray-700 text-lg">&times;</button>
+        </div>
+
+        <!-- Modal Content (Edit Account) -->
+        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6">Edit Account</h2>
+
+        <form action="/updateUserAccount" method="POST">
+            <!-- Name Field -->
+            <div class="mb-4">
+                <label for="name" class="block text-lg font-medium text-gray-800">Full Name</label>
+                <input type="text" id="name" name="name" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" value="<%- currentUser.name %>" placeholder="Bhuwan " required />
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-4">
+                <label for="username" class="block text-lg font-medium text-gray-800">Email Address</label>
+                <input type="text" id="username" name="username" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" value="<%- currentUser.username %>" placeholder="bhuwan@mail.com" required />
+            </div>
+
+            <input type="hidden" name="id" value="<%- currentUser.id %>">
+            <input type="hidden" name="updatedBy" value="<%- currentUser.name %>">
+
+            <!-- Password Field
+            <div class="mb-4">
+                <label for="password" class="block text-lg font-medium text-gray-800">Password</label>
+                <input type="password" id="password" name="password" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" placeholder="********" required />
+            </div>
+
+             Confirm Password Field 
+            <div class="mb-4">
+                <label for="confirmPassword" class="block text-lg font-medium text-gray-800">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" placeholder="********" required />
+            </div> -->
+
+            <!-- Submit Button -->
+            <div class="mt-6 flex justify-center">
+                <button type="submit" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>

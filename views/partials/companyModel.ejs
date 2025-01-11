@@ -1,0 +1,216 @@
+<!-- Company Details Modal -->
+<div id="companyModal" class="fixed flex inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="modal-content bg-white p-8 rounded-lg w-[90%] max-w-4xl h-[90%] max-h-screen overflow-auto shadow-xl">
+        <!-- Close Button -->
+        <div class="text-right">
+            <button onclick="closeCompanyModal()" class="text-gray-500 hover:text-gray-700 text-lg">&times;</button>
+        </div>
+
+        <!-- Modal Header -->
+        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6" id="companyName">Company Name</h2>
+        
+        <!-- Company Details Grid (Modern UI) -->
+        <div id="companyDetails" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Company Address -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">Address:</p>
+                <p id="companyAddress" class="text-gray-600">123 Business St</p>
+            </div>
+            <!-- City -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">City:</p>
+                <p id="companyCity" class="text-gray-600">Some City</p>
+            </div>
+            <!-- State -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">State:</p>
+                <p id="companyState" class="text-gray-600">Some State</p>
+            </div>
+            <!-- Country -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">Country:</p>
+                <p id="companyCountry" class="text-gray-600">Some Country</p>
+            </div>
+            <!-- Mobile -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">Mobile:</p>
+                <p id="companyMobile" class="text-gray-600">+1234567890</p>
+            </div>
+            <!-- Pin Code -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">PIN CODE:</p>
+                <p id="pinCode" class="text-gray-600">486846464</p>
+            </div>
+            <!-- GST Number-->
+            <div>
+                <p class="text-lg font-medium text-gray-800">GST Number:</p>
+                <p id="gstNumber" class="text-gray-600">4586446GGE556GE</p>
+            </div>
+            <!-- Email -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">Email:</p>
+                <p id="companyEmail" class="text-gray-600">info@company.com</p>
+            </div>
+            <!-- Website -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">Website:</p>
+                <p id="companyWebsite" class="text-gray-600">www.company.com</p>
+            </div>
+            <!-- GSTIN -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">GSTIN:</p>
+                <p id="companyGstin" class="text-gray-600">123456789012345</p>
+            </div>
+            <!-- PAN Number -->
+            <div>
+                <p class="text-lg font-medium text-gray-800">PAN Number:</p>
+                <p id="companyPanNumber" class="text-gray-600">ABCDE1234F</p>
+            </div>
+
+            <!-- Edit Button -->
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center">
+                <button onclick="editCompanyDetails()" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Edit</button>
+            </div>
+        </div>
+
+        <!-- Edit Company Form (Initially Hidden) -->
+        <div id="companyEditForm" class="hidden">
+            <form>
+                <div class="mb-4">
+                    <label for="editCompanyName" class="block text-lg font-medium text-gray-800">Company Name</label>
+                    <input type="text" id="editCompanyName" name="editCompanyName" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <div class="mb-4">
+                        <label for="editCompanyAddress" class="block text-lg font-medium text-gray-800">Address</label>
+                        <input type="text" id="editCompanyAddress" name="editCompanyAddress" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCompanyCity" class="block text-lg font-medium text-gray-800">City</label>
+                        <input type="text" id="editCompanyCity" name="editCompanyCity" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCompanyState" class="block text-lg font-medium text-gray-800">State</label>
+                        <input type="text" id="editCompanyState" name="editCompanyState" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCompanyCountry" class="block text-lg font-medium text-gray-800">Country</label>
+                        <input type="text" id="editCompanyCountry" name="editCompanyCountry" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCompanyMobile" class="block text-lg font-medium text-gray-800">Mobile</label>
+                        <input type="text" id="editCompanyMobile" name="editCompanyMobile" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editPinCode" class="block text-lg font-medium text-gray-800">Pin Code</label>
+                        <input type="text" id="editPinCode" name="editPinCode" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editGSTNo" class="block text-lg font-medium text-gray-800">GST Number</label>
+                        <input type="text" id="editGSTNo" name="editGSTNo" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCompanyEmail" class="block text-lg font-medium text-gray-800">Email</label>
+                        <input type="email" id="editCompanyEmail" name="editCompanyEmail" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCompanyWebsite" class="block text-lg font-medium text-gray-800">Website</label>
+                        <input type="text" id="editCompanyWebsite" name="editCompanyWebsite" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editPanNumber" class="block text-lg font-medium text-gray-800">PAN Number</label>
+                        <input type="text" id="editPanNumber" name="editPanNumber" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editFinancialYearBeginning" class="block text-lg font-medium text-gray-800">Financial Year Beginning </label>
+                        <input type="text" id="editFinancialYearBeginning" name="editFinancialYearBeginning" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editBooksBeginning" class="block text-lg font-medium text-gray-800">Books Beginning </label>
+                        <input type="text" id="editBooksBeginning" name="editBooksBeginning" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editCurrency" class="block text-lg font-medium text-gray-800">Currency </label>
+                        <input type="text" id="editCurrency" name="editCurrency" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editBankName" class="block text-lg font-medium text-gray-800">Bank Name </label>
+                        <input type="text" id="editBankName" name="editBankName" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editAccountNumber" class="block text-lg font-medium text-gray-800">Account Number </label>
+                        <input type="text" id="editAccountNumber" name="editAccountNumber" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editIfsc" class="block text-lg font-medium text-gray-800">IFSC </label>
+                        <input type="text" id="editIfsc" name="editIfsc" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editBranch" class="block text-lg font-medium text-gray-800">Branch </label>
+                        <input type="text" id="editBranch" name="editBranch" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editSwiftCode" class="block text-lg font-medium text-gray-800">Swift Code </label>
+                        <input type="text" id="editSwiftCode" name="editSwiftCode" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editUpiId" class="block text-lg font-medium text-gray-800">UPI ID</label>
+                        <input type="text" id="editUpiId" name="editUpiId" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editWhatsAppNumber" class="block text-lg font-medium text-gray-800">Whats App Number </label>
+                        <input type="text" id="editWhatsAppNumber" name="editWhatsAppNumber" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="editInstanceId" class="block text-lg font-medium text-gray-800">Instance ID </label>
+                        <input type="text" id="editInstanceId" name="editInstanceId" class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="mt-6 flex justify-center">
+                    <button type="button" onclick="saveCompanyDetails()" class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Function to start editing company details
+    function editCompanyDetails() {
+        // Show the form and hide the static details
+        document.getElementById("companyDetails").classList.add("hidden");
+        document.getElementById("companyEditForm").classList.remove("hidden");
+
+        // Fill form fields with current company details
+        document.getElementById("editCompanyName").value = document.getElementById("companyName").textContent;
+        document.getElementById("editCompanyAddress").value = document.getElementById("companyAddress").textContent;
+        document.getElementById("editCompanyCity").value = document.getElementById("companyCity").textContent;
+        document.getElementById("editCompanyState").value = document.getElementById("companyState").textContent;
+        document.getElementById("editCompanyCountry").value = document.getElementById("companyCountry").textContent;
+        document.getElementById("editCompanyMobile").value = document.getElementById("companyMobile").textContent;
+        document.getElementById("editCompanyEmail").value = document.getElementById("companyEmail").textContent;
+        document.getElementById("editCompanyWebsite").value = document.getElementById("companyWebsite").textContent;
+    }
+
+    // Function to save updated company details
+    function saveCompanyDetails() {
+        // Update company details with form values
+        document.getElementById("companyName").textContent = document.getElementById("editCompanyName").value;
+        document.getElementById("companyAddress").textContent = document.getElementById("editCompanyAddress").value;
+        document.getElementById("companyCity").textContent = document.getElementById("editCompanyCity").value;
+        document.getElementById("companyState").textContent = document.getElementById("editCompanyState").value;
+        document.getElementById("companyCountry").textContent = document.getElementById("editCompanyCountry").value;
+        document.getElementById("companyMobile").textContent = document.getElementById("editCompanyMobile").value;
+        document.getElementById("companyEmail").textContent = document.getElementById("editCompanyEmail").value;
+        document.getElementById("companyWebsite").textContent = document.getElementById("editCompanyWebsite").value;
+
+        // Hide the form and show updated details
+        document.getElementById("companyDetails").classList.remove("hidden");
+        document.getElementById("companyEditForm").classList.add("hidden");
+
+        // Optionally save to the server here using AJAX or any other method
+    }
+</script>
