@@ -7,7 +7,7 @@
         </div>
 
         <!-- Modal Header -->
-        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6" id="companyName">Company Name</h2>
+        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6" id="companyName"> <%- company?.name %> </h2>
 
         <!-- Company Details Grid (Modern UI) -->
         <div id="companyDetails" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -15,127 +15,112 @@
             <!-- Company Address -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Address:</p>
-                <p id="companyAddress" class="text-gray-600">123 Business St</p>
+                <p id="companyAddress" class="text-gray-600"> <%- company?.address %> </p>
             </div>
             <!-- City -->
             <div>
                 <p class="text-lg font-medium text-gray-800">City:</p>
-                <p id="companyCity" class="text-gray-600">Some City</p>
+                <p id="companyCity" class="text-gray-600"><%- company.city %></p>
             </div>
             <!-- State -->
             <div>
                 <p class="text-lg font-medium text-gray-800">State:</p>
-                <p id="companyState" class="text-gray-600">Some State</p>
+                <p id="companyState" class="text-gray-600"><%- company.state %></p>
             </div>
             <!-- Country -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Country:</p>
-                <p id="companyCountry" class="text-gray-600">Some Country</p>
+                <p id="companyCountry" class="text-gray-600"><%- company.country %></p>
             </div>
             <!-- Mobile -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Mobile:</p>
-                <p id="companyMobile" class="text-gray-600">+1234567890</p>
+                <p id="companyMobile" class="text-gray-600"><%- company.mobile %></p>
             </div>
             <!-- Pin Code -->
             <div>
                 <p class="text-lg font-medium text-gray-800">PIN CODE:</p>
-                <p id="pinCode" class="text-gray-600">486846464</p>
+                <p id="pinCode" class="text-gray-600"><%- company.pincode %></p>
             </div>
             <!-- GST Number-->
             <div>
                 <p class="text-lg font-medium text-gray-800">GSTIN:</p>
-                <p id="gstNumber" class="text-gray-600">4586446GGE556GE</p>
+                <p id="gstNumber" class="text-gray-600"><%- company.gstin.toUpperCase() %></p>
             </div>
             <!-- Email -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Email:</p>
-                <p id="companyEmail" class="text-gray-600">info@company.com</p>
+                <p id="companyEmail" class="text-gray-600"><%- company.email %></p>
             </div>
             <!-- Website -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Website:</p>
-                <p id="companyWebsite" class="text-gray-600">www.company.com</p>
-            </div>
-            <!-- GSTIN -->
-            <div>
-                <p class="text-lg font-medium text-gray-800">GSTIN:</p>
-                <p id="companyGSTNo" class="text-gray-600">123456789012345</p>
-            </div>
-            <!-- Email -->
-            <div>
-                <p class="text-lg font-medium text-gray-800"> Email:</p>
-                <p id="companyEmail" class="text-gray-600"></p>
-            </div>
-
-            <!-- website -->
-            <div>
-                <p class="text-lg font-medium text-gray-800"> Website:</p>
-                <p id="companyWebsite" class="text-gray-600"></p>
+                <p id="companyWebsite" class="text-gray-600"><%- company.website %></p>
             </div>
 
             <!-- PAN Number -->
             <div>
                 <p class="text-lg font-medium text-gray-800">PAN Number:</p>
-                <p id="panNumber" class="text-gray-600"></p>
+                <p id="panNumber" class="text-gray-600"><%- company.pan_number.toUpperCase() %></p>
             </div>
 
             <!-- Financial Year Beginning  -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Financial Year Beginning:</p>
-                <p id="financialYearBeginning" class="text-gray-600"></p>
+                <p id="financialYearBeginning" class="text-gray-600"><%- company.financial_year_beginning.toISOString().split('T')[0] %></p>
             </div>
 
             <!-- Book Beginnings -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Books Beginning:</p>
-                <p id="booksBeginning" class="text-gray-600"></p>
+                <p id="booksBeginning" class="text-gray-600"><%- company.books_beginning.toISOString().split('T')[0] %></p>
             </div>
 
             <!-- Currency -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Currency:</p>
-                <p id="currency" class="text-gray-600"></p>
+                <p id="currency" class="text-gray-600"><%- company.currency %></p>
             </div>
             <!-- Bank Name -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Bank Name:</p>
-                <p id="bankName" class="text-gray-600"></p>
+                <p id="bankName" class="text-gray-600"> <%- company.bank_name %> </p>
             </div>
             <!-- Account Number -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Account Number:</p>
-                <p id="accountNumber" class="text-gray-600"></p>
+                <p id="accountNumber" class="text-gray-600"> <%- company.account_number %> </p>
             </div>
             <!-- IFSC -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> IFSC:</p>
-                <p id="ifsc" class="text-gray-600"></p>
+                <p id="ifsc" class="text-gray-600"> <%- company.ifsc %> </p>
             </div>
             <!-- Branch -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Branch:</p>
-                <p id="branch" class="text-gray-600"></p>
+                <p id="branch" class="text-gray-600"> <%- company.branch %> </p>
             </div>
             <!-- Swift Code -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Swift Code:</p>
-                <p id="currency" class="text-gray-600"></p>
+                <p id="swiftCode" class="text-gray-600"> <%- company.swift_code %> </p>
             </div>
-            <!-- Swift Code -->
-            <div>
-                <p class="text-lg font-medium text-gray-800"> Currency:</p>
-                <p id="currency" class="text-gray-600"></p>
-            </div>
+
             <!-- UPI ID -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> UPI ID:</p>
-                <p id="UpiId" class="text-gray-600"></p>
+                <p id="upiId" class="text-gray-600"> <%- company.upi_id %> </p>
             </div>
             <!-- Whatsapp Number -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Whats App Number:</p>
-                <p id="whatsAppNumber" class="text-gray-600"></p>
+                <p id="whatsAppNumber" class="text-gray-600"> <%- company.whatsapp_number %> </p>
+            </div>
+            <!-- Instance ID -->
+            <div>
+                <p class="text-lg font-medium text-gray-800"> Instance ID:</p>
+                <p id="instanceId" class="text-gray-600"> <%- company.instance_id %> </p>
             </div>
 
 
@@ -150,7 +135,7 @@
 
         <!-- Edit Company Form (Initially Hidden) -->
         <div id="companyEditForm" class="hidden">
-            <form>
+            <form action="/updateCompanyDetails" method="POST">
                 <div class="mb-4">
                     <label for="editCompanyName" class="block text-lg font-medium text-gray-800">Company Name</label>
                     <input type="text" id="editCompanyName" name="editCompanyName"
@@ -271,7 +256,7 @@
 
                 <!-- Save Button -->
                 <div class="mt-6 flex justify-center">
-                    <button type="button" onclick="saveCompanyDetails()"
+                    <button type="submit" onclick="saveCompanyDetails()"
                             class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                         Save
                     </button>
@@ -294,8 +279,22 @@
         document.getElementById("editCompanyState").value = document.getElementById("companyState").textContent;
         document.getElementById("editCompanyCountry").value = document.getElementById("companyCountry").textContent;
         document.getElementById("editCompanyMobile").value = document.getElementById("companyMobile").textContent;
+        document.getElementById("editPinCode").value = document.getElementById("pinCode").textContent;
+        document.getElementById("editGSTNo").value = document.getElementById("gstNumber").textContent;
         document.getElementById("editCompanyEmail").value = document.getElementById("companyEmail").textContent;
         document.getElementById("editCompanyWebsite").value = document.getElementById("companyWebsite").textContent;
+        document.getElementById("editPanNumber").value = document.getElementById("panNumber").textContent;
+        document.getElementById("editFinancialYearBeginning").value = document.getElementById("financialYearBeginning").textContent;
+        document.getElementById("editBooksBeginning").value = document.getElementById("booksBeginning").textContent;
+        document.getElementById("editCurrency").value = document.getElementById("currency").textContent;
+        document.getElementById("editBankName").value = document.getElementById("bankName").textContent;
+        document.getElementById("editAccountNumber").value = document.getElementById("accountNumber").textContent;
+        document.getElementById("editIfsc").value = document.getElementById("ifsc").textContent;
+        document.getElementById("editBranch").value = document.getElementById("branch").textContent;
+        document.getElementById("editSwiftCode").value = document.getElementById("swiftCode").textContent;
+        document.getElementById("editUpiId").value = document.getElementById("upiId").textContent;
+        document.getElementById("editWhatsAppNumber").value = document.getElementById("whatsAppNumber").textContent;
+        document.getElementById("editInstanceId").value = document.getElementById("instanceId").textContent;
     }
 
     // Function to save updated company details
@@ -307,8 +306,22 @@
         document.getElementById("companyState").textContent = document.getElementById("editCompanyState").value;
         document.getElementById("companyCountry").textContent = document.getElementById("editCompanyCountry").value;
         document.getElementById("companyMobile").textContent = document.getElementById("editCompanyMobile").value;
+        document.getElementById("pinCode").textContent = document.getElementById("editPinCode").value;
+        document.getElementById("gstNumber").textContent = document.getElementById("editGSTNo").value;
         document.getElementById("companyEmail").textContent = document.getElementById("editCompanyEmail").value;
         document.getElementById("companyWebsite").textContent = document.getElementById("editCompanyWebsite").value;
+        document.getElementById("panNumber").textContent = document.getElementById("editPanNumber").value;
+        document.getElementById("financialYearBeginning").textContent = document.getElementById("editFinancialYearBeginning").value;
+        document.getElementById("booksBeginning").textContent = document.getElementById("editBooksBeginning").value;
+        document.getElementById("currency").textContent = document.getElementById("editCurrency").value;
+        document.getElementById("bankName").textContent = document.getElementById("editBankName").value;
+        document.getElementById("accountNumber").textContent = document.getElementById("editAccountNumber").value;
+        document.getElementById("ifsc").textContent = document.getElementById("editIfsc").value;
+        document.getElementById("branch").textContent = document.getElementById("editBranch").value;
+        document.getElementById("swiftCode").textContent = document.getElementById("editSwiftCode").value;
+        document.getElementById("upiId").textContent = document.getElementById("editUpiId").value;
+        document.getElementById("whatsAppNumber").textContent = document.getElementById("editWhatsAppNumber").value;
+        document.getElementById("instanceId").textContent = document.getElementById("editInstanceId").value;
 
         // Hide the form and show updated details
         document.getElementById("companyDetails").classList.remove("hidden");

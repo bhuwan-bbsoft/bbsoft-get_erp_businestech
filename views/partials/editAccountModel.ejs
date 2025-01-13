@@ -8,6 +8,9 @@
 
         <!-- Modal Content (Edit Account) -->
         <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6">Edit Account</h2>
+        <div class="flex w-full items-center justify-end">
+            <button class="px-4 py-2 rounded-lg text-white bg-red-700 hover:bg-red-600" onclick="openPasswordChangeModal()" data-change-password="">Change Password</button>
+        </div>
 
         <form action="/updateUserAccount" method="POST">
             <!-- Name Field -->
@@ -44,3 +47,96 @@
         </form>
     </div>
 </div>
+
+
+
+<!-- Modal -->
+<div id="passwordChangeModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden " style="z-index: 60;">
+    <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
+        <h3 class="text-xl font-semibold mb-4">Change Password</h3>
+        <form id="passwordForm">
+            <div class="mb-4">
+                <label for="newChangePassword" class="block text-sm font-medium text-gray-700 mb-2">New Password:</label>
+                <input type="password" id="newChangePassword" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            </div>
+
+            <div class="mb-4">
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password:</label>
+                <input type="password" id="confirmPassword" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            </div>
+
+            <div class="flex justify-between space-x-2">
+                <button type="button" class="bg-gray-400 hover:bg-gray-500 px-4 py-2 rounded-md text-white" onclick="closePasswordChangeModal()">Cancel</button>
+                <button type="submit" class="bg-red-700 hover:bg-red-600 px-4 py-2 rounded-md text-white">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+    function openPasswordChangeModal() {
+        const userId =  "<%- currentUser.id  %>";
+        document.getElementById('passwordChangeModal').classList.remove('hidden');
+    }
+
+    // Close the modal
+    function closePasswordChangeModal() {
+        document.getElementById('passwordChangeModal').classList.add('hidden');
+    }
+
+    // Handle form submission
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const button = document.getElementById("change-password-btn");
+
+        let userId = JSON.parse(button.getAttribute('data-change-password'));
+        if(userId === "".trim() || userId == null || userId === undefined){
+            userId =  "<%- currentUser.id  %>";
+        }
+
+        const username =  "<%- currentUser.name  %>";
+
+        // Get password values
+        const newPassword = document.getElementById('newChangePassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Check if passwords match
+        if (newPassword !== confirmPassword) {
+            alert("Passwords do not match. Please try again.");
+            return;
+        }
+
+
+
+        const data = {
+            userId: userId,
+            username: username,
+            newPassword: newPassword
+        };
+
+        // Send the password to the backend (using Fetch API or AJAX)
+        fetch('/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Password changed successfully.");
+                    closePasswordChangeModal();
+                } else {
+                    alert("Error changing password.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("There was an error processing your request.");
+            });
+    });
+
+</script>
