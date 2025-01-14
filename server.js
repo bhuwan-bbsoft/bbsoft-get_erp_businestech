@@ -87,6 +87,7 @@ app.post('/login', redirectIfAuthenticated, async (req, res) => {
       if (await bcrypt.compare(password, user.password)) {
         req.session.userId = user.id;
         req.session.userLevel = user.user_level;
+
         return res.redirect('/dashboard');
       } else {
         return res.status(400).send('Invalid credentials');
@@ -111,13 +112,21 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/dashboard', authenticateUser, async (req, res) => {
+  let selectedFinancialYear = req.session.financial_year;
   try {
+    const latestFinancialYear = await pool.query('select distinct financial_year from financial_target order by financial_year desc limit 1');
+
+    if(selectedFinancialYear === undefined || selectedFinancialYear === null ){
+      selectedFinancialYear = latestFinancialYear.rows[0].financial_year;
+    }
+
+
     let salesQuery = `
         SELECT distinct s.*
         FROM sales s
         JOIN financial_target ft
             ON ft.financial_year = ft.financial_year  
-        WHERE ft.financial_year = '2023-24'  
+        WHERE ft.financial_year = '${selectedFinancialYear}'  
           AND s.date >= TO_DATE(CONCAT(SUBSTRING(ft.financial_year, 1, 4), '-04-01'), 'YYYY-MM-DD') 
           AND s.date <= TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')
           
@@ -137,9 +146,10 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
     
     if (req.session.userLevel === 2) {
       financialTarget += ` WHERE user_id = ${req.session.userId} order by financial_year desc `;
-      salesQuery += ` and s.user_id = ${req.session.userId} order by id desc`;
+      salesQuery += ` and s.user_id = ${req.session.userId} `;
       quotationsQuery += ` WHERE user_id = ${req.session.userId} order by id desc`;
     }
+
 
 
 
@@ -156,7 +166,6 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
     const allUserDetailsResult = await  pool.query(allUserDetailsQuery);
     const financialYearResult = await pool.query(financialYearQuery)
 
-    console.log("Financial Years: " ,financialYearResult.rows)
 
 
     
@@ -169,6 +178,7 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
       currentUser: currentUserResult.rows[0],
       financialTarget: financialTargetResult.rows,
       financialYears: financialYearResult.rows,
+      selectedFinancialYear: selectedFinancialYear,
       userLevel: req.session.userLevel,
       userId: req.session.userId
 
@@ -178,6 +188,14 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
     res.status(500).send('Error fetching dashboard data');
   }
 });
+
+app.post('/set-financial-year', (req, res) => {
+  const { financial_year } = req.body;
+  req.session.financial_year = financial_year;
+
+  res.redirect('/dashboard');
+});
+
 
 app.post("/updateUserAccount", async (req,res) => {
   const { name, username, id ,updatedBy} = req.body;

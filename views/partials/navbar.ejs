@@ -1,13 +1,15 @@
 <nav class="bg-gray-800 p-4">
     <div class="max-w-[95vw] mx-auto flex justify-between items-center ">
         <a href="/" class="text-white text-2xl font-bold ">Sales & Quotation System</a>
-        <div class="space-x-4">
+        <div class="space-x-4 flex">
             <% if (typeof userId !== 'undefined') { %>
-                <select>
-                    <% financialYears.forEach(financialyear => {  %>
-                        <option value="<%financialyear.financial_year %>"> <%- financialyear.financial_year %> </option>
-                    <% }) %>
-                </select>
+                <form method="POST" action="/set-financial-year">
+                    <select name="financial_year"  onchange="this.form.submit()" class="py-1 px-4 bg-transparent text-white">
+                        <% financialYears.forEach(financialyear => {  %>
+                            <option value="<%= financialyear.financial_year %>" <%= financialyear.financial_year === selectedFinancialYear ? 'selected' : '' %>  class="text-[#000]" > <%- financialyear.financial_year %> </option>
+                        <% }) %>
+                    </select>
+                </form>
                 <a href="/dashboard" class="text-white hover:text-gray-300">Dashboard</a>
                 <a href="/logout" class="text-white hover:text-gray-300">Logout</a>
             <% } else { %>
@@ -17,4 +19,3 @@
         </div>
     </div>
 </nav>
-
