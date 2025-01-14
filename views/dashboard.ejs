@@ -245,14 +245,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <!-- <div><%= userId %></div> -->
                             <% sales.forEach(sale => { %>
                                 <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b">
                                     <td class="min-w-[8rem]">
                                         <%= sale.date.toISOString().split('T')[0] %>
                                     </td>
                                     <td><%= sale.product_and_services %></td>
-                                    <td><%=   %></td>
+                                    <td><%=     %></td>
                                     <td><%= sale.additional_description %></td>
                                     <td><%= sale.tally_serial_number %></td>
                                     <td><%= sale.edition %></td>
@@ -436,9 +435,9 @@
 </script>
 
 
-<%- include('partials/companyModel') %> <%-
-include('partials/editAccountModel') %> <%-
-include('partials/manageUserModel') %>
+<%- include('partials/companyModel') %>
+<%- include('partials/editAccountModel') %>
+<%- include('partials/manageUserModel') %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -513,7 +512,6 @@ include('partials/manageUserModel') %>
         document.getElementById("editAchievedTillDate").value = userDetail.achieved_till_date;
         document.getElementById("editBalanceToGo").value = userDetail.balance_to_go;
         document.getElementById("editDesignation").value = userDetail.designation;
-        document.getElementById("editRole").value = userDetail.financial_role;
         document.getElementById("editSalesManager").value = userDetail.sales_manager;
 
         document.getElementById("editUserModel").classList.remove("hidden");
@@ -534,7 +532,7 @@ include('partials/manageUserModel') %>
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({userId:userId})
+                body: JSON.stringify({userId: userId})
             })
                 .then(response => response.json())
                 .then(data => {

@@ -3,6 +3,11 @@
         <a href="/" class="text-white text-2xl font-bold ">Sales & Quotation System</a>
         <div class="space-x-4">
             <% if (typeof userId !== 'undefined') { %>
+                <select>
+                    <% financialYears.forEach(financialyear => {  %>
+                        <option value="<%financialyear.financial_year %>"> <%- financialyear.financial_year %> </option>
+                    <% }) %>
+                </select>
                 <a href="/dashboard" class="text-white hover:text-gray-300">Dashboard</a>
                 <a href="/logout" class="text-white hover:text-gray-300">Logout</a>
             <% } else { %>

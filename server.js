@@ -112,22 +112,35 @@ app.get('/logout', (req, res) => {
 
 app.get('/dashboard', authenticateUser, async (req, res) => {
   try {
-    let salesQuery = 'SELECT * FROM sales';
-    let quotationsQuery = 'SELECT * FROM quotation';
+    let salesQuery = `
+        SELECT distinct s.*
+        FROM sales s
+        JOIN financial_target ft
+            ON ft.financial_year = ft.financial_year  
+        WHERE ft.financial_year = '2023-24'  
+          AND s.date >= TO_DATE(CONCAT(SUBSTRING(ft.financial_year, 1, 4), '-04-01'), 'YYYY-MM-DD') 
+          AND s.date <= TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')
+          
+    `;
+    let quotationsQuery = 'SELECT * FROM quotation ';
     let companyQuery = 'SELECT * FROM company where id=1';
     let usersQuery = `SELECT * from users`; 
     let currentUser = `SELECT * from users where id = ${req.session.userId} `
     let financialTarget = `SELECT * FROM public.financial_target`;
-    let allUserDetailsQuery = `select u.id,u.name, u.username,ul.name as role,s.name as status,ft.financial_year,ft.business_target, ft.achieved_till_date, ft.balance_to_go, ft.designation,ft.role as financial_role, ft.sales_manager  
+    let financialYearQuery = `select distinct financial_year from financial_target order by financial_year desc`
+    let allUserDetailsQuery = `select u.id,u.name, u.username,ul.name as role,s.name as status,ft.financial_year,ft.business_target, ft.achieved_till_date, ft.balance_to_go, ft.designation, ft.sales_manager  
                                    from users u
                                    inner join status s on s.level = u.status
                                    inner join user_level ul on ul.level = u.user_level
-                                   inner join financial_target ft on ft.user_id = u.id`;
+                                   left join financial_target ft on ft.user_id = u.id`;
 
     
-    if (req.session.userLevel !== '1') {
+    if (req.session.userLevel === 2) {
       financialTarget += ` WHERE user_id = ${req.session.userId} order by financial_year desc `;
+      salesQuery += ` and s.user_id = ${req.session.userId} order by id desc`;
+      quotationsQuery += ` WHERE user_id = ${req.session.userId} order by id desc`;
     }
+
 
 
     
@@ -137,13 +150,15 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
     const salesResult = await pool.query(salesQuery);
     const quotationsResult = await pool.query(quotationsQuery);
     const companyResult = await pool.query(companyQuery);
-    const userResult = await pool.query(usersQuery)
-    const currentUserResult = await pool.query(currentUser)
-    const financialTargetResult = await pool.query(financialTarget)
-    const allUserDetailsResult = await  pool.query(allUserDetailsQuery)
+    const userResult = await pool.query(usersQuery);
+    const currentUserResult = await pool.query(currentUser);
+    const financialTargetResult = await pool.query(financialTarget);
+    const allUserDetailsResult = await  pool.query(allUserDetailsQuery);
+    const financialYearResult = await pool.query(financialYearQuery)
 
-    console.log(allUserDetailsResult)
-    
+    console.log("Financial Years: " ,financialYearResult.rows)
+
+
     
     res.render('dashboard', { 
       sales: salesResult.rows, 
@@ -153,6 +168,7 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
       allUserDetails: allUserDetailsResult.rows,
       currentUser: currentUserResult.rows[0],
       financialTarget: financialTargetResult.rows,
+      financialYears: financialYearResult.rows,
       userLevel: req.session.userLevel,
       userId: req.session.userId
 
@@ -204,28 +220,15 @@ app.post("/updateCompanyDetails", async (req,res) => {
 })
 
 app.post("/addNewUser", async (req,res) => {
-  const { newName, newUserName, newPassword, newUserRole, newUserStatus, newFinancialYear,
-    newBusinessTarget, newAchievedTillDate, newBalanceToGo, newDesignation, newRole, newSalesManager  } = req.body;
+  const { newName, newUserName, newPassword, newUserRole, newUserStatus  } = req.body;
 
   try{
-    await pool.query('BEGIN');
-
-    // Insert into Users table and get the user_id
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const insertUserQuery = `INSERT INTO users( name, username, password, user_level, status, created_by, created_date) VALUES ($1, $2, $3, $4, $5, 'ADMIN', $6) RETURNING id`;
-    const result = await pool.query(insertUserQuery, [newName, newUserName, hashedPassword,newUserRole, newUserStatus, new Date()]);
-    const userId = result.rows[0].id;
-
-    // Insert into financial target table using the user_id
-
-    const insertFinancialTargetQuery = `INSERT INTO financial_target(user_id, financial_year, business_target, achieved_till_date, balance_to_go, designation, role, sales_manager) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
-    await pool.query(insertFinancialTargetQuery, [userId, newFinancialYear, newBusinessTarget, newAchievedTillDate, newBalanceToGo, newDesignation, newRole, newSalesManager]);
-
-    await pool.query('COMMIT');
+    await pool.query('INSERT INTO users( name, username, password, user_level, status, created_by, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        [newName, newUserName, hashedPassword,newUserRole, newUserStatus, 'ADMIN' ,new Date()]);
 
     res.redirect('/dashboard')
   }catch (error){
-    await pool.query('ROLLBACK');
     console.log(error)
     res.status(500).send("Error in creating new user");
   }

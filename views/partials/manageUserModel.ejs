@@ -41,15 +41,18 @@
                         <td class="px-4 py-2 text-gray-700"><span
                                     class="<%- userDetal.status === 'Active' ? 'bg-green-800 py-1 px-2 rounded-lg text-white' : 'bg-red-700 py-1 px-2 rounded-lg text-white' %>"> <%- userDetal.status %> </span>
                         </td>
-                        <td class="px-4 py-2 text-gray-700"> &#x20b9; <%-  userDetal.business_target  %> </td>
-                        <td class="px-4 py-2 text-gray-700"> &#x20b9; <%- userDetal.achieved_till_date %> </td>
-                        <td class="px-4 py-2 text-gray-700"> &#x20b9; <%- userDetal.balance_to_go %> </td>
-                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.designation %> </td>
-                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.sales_manager %> </td>
+                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.business_target != null ? " &#x20b9; " + userDetal.business_target : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.achieved_till_date != null ? " &#x20b9; " + userDetal.achieved_till_date : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.balance_to_go != null ? " &#x20b9; " + userDetal.balance_to_go : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.designation ? userDetal.designation : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.sales_manager ? userDetal.sales_manager : "-" %> </td>
                         <td class="px-4 py-2 text-gray-700">
-                            <button data-user='<%- JSON.stringify(userDetal) %>' onclick="openEditUserModel(this)" class="text-blue-600 hover:text-blue-800">Edit
+                            <button data-user='<%- JSON.stringify(userDetal) %>' onclick="openEditUserModel(this)"
+                                    class="text-blue-600 hover:text-blue-800">Edit
                             </button>
-                            <button onclick="deleteUser(<%- userDetal.id %>)" class="text-red-600 hover:text-red-800 ml-2">Delete</button>
+                            <button onclick="deleteUser(<%- userDetal.id %>)"
+                                    class="text-red-600 hover:text-red-800 ml-2">Delete
+                            </button>
                         </td>
                     </tr>
                 <% }) %>
@@ -100,7 +103,6 @@
                                 class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
                                 required>
                             <option value="1">Admin</option>
-                            <option value="2">User</option>
                         </select>
                     </div>
                     <div class="mb-4 w-1/3">
@@ -112,57 +114,7 @@
                             <option value="2">Inactive</option>
                         </select>
                     </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="newFinancialYear" class="block text-lg font-medium text-gray-800">Financial
-                            Year</label>
-                        <input type="date" id="newFinancialYear" name="newFinancialYear"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               required/>
-                    </div>
-                </div>
-                <div class="flex gap-5">
-                    <div class="mb-4 w-1/3">
-                        <label for="newBusinessTarget" class="block text-lg font-medium text-gray-800">Business
-                            Target</label>
-                        <input type="text" id="newBusinessTarget" name="newBusinessTarget"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" &#x20b9; ___.00" required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="newAchievedTillDate" class="block text-lg font-medium text-gray-800">Achieved Till
-                            Date</label>
-                        <input type="text" id="newAchievedTillDate" name="newAchievedTillDate"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" &#x20b9; ___.00" required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="newBalanceToGo" class="block text-lg font-medium text-gray-800">Balance To
-                            Go</label>
-                        <input type="text" id="newBalanceToGo" name="newBalanceToGo"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" &#x20b9; ___.00" required/>
-                    </div>
-                </div>
-                <div class="flex gap-5">
-                    <div class="mb-4 w-1/3">
-                        <label for="newDesignation" class="block text-lg font-medium text-gray-800">Designation</label>
-                        <input type="text" id="newDesignation" name="newDesignation"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder="Data Admin" required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="newRole" class="block text-lg font-medium text-gray-800">Role in a Company</label>
-                        <input type="text" id="newRole" name="newRole"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder="Managing Data " required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="newSalesManager" class="block text-lg font-medium text-gray-800">Sales
-                            Manager</label>
-                        <input type="text" id="newSalesManager" name="newSalesManager"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" Ram Prashad" required/>
-                    </div>
+
                 </div>
 
                 <div class="mt-6 flex justify-center">
@@ -178,7 +130,7 @@
 
 <!-- Edit User Modal -->
 <div id="editUserModel" class="fixed flex inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
-    <div class="modal-content bg-white p-6 rounded-lg w-[60%] h-[60%] max-h-screen overflow-auto shadow-xl">
+    <div class="modal-content bg-white p-6 rounded-lg w-[60%] h-[80%] max-h-screen overflow-auto shadow-xl">
         <!-- Close Button -->
         <div class="text-right">
             <button onclick="closeEditUserModel()" class="text-gray-500 hover:text-gray-700 text-lg">&times;</button>
@@ -187,7 +139,9 @@
         <!-- Edit User Header -->
         <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6">Edit User</h2>
         <div class="flex w-full items-center justify-end">
-            <button id="change-password-btn" class="px-4 py-2 rounded-lg text-white bg-red-700 hover:bg-red-600" onclick="openPasswordChangeModal()" data-change-password="null">Change Password</button>
+            <button id="change-password-btn" class="px-4 py-2 rounded-lg text-white bg-red-700 hover:bg-red-600"
+                    onclick="openPasswordChangeModal()" data-change-password="null">Change Password
+            </button>
         </div>
 
         <!-- Form for Editing User -->
@@ -204,21 +158,22 @@
                     <div class="mb-4 w-1/2">
                         <label for="editUserName" class="block text-lg font-medium text-gray-800">User Name</label>
                         <input type="text" id="editUserName" name="editUserName"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder="bhuwan@gmail.com" required/>
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               placeholder="bhuwan@gmail.com" readonly required/>
                     </div>
                 </div>
                 <div class="flex gap-5">
-                    <div class="mb-4 w-1/3">
+                    <div class="mb-4 w-1/2">
                         <label for="editUserRole" class="block text-lg font-medium text-gray-800">Role</label>
                         <select id="editUserRole" name="editUserRole"
-                                class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+                                class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                                disabled
                                 required>
                             <option value="1">Admin</option>
                             <option value="2">User</option>
                         </select>
                     </div>
-                    <div class="mb-4 w-1/3">
+                    <div class="mb-4 w-1/2">
                         <label for="editUserStatus" class="block text-lg font-medium text-gray-800">Status</label>
                         <select id="editUserStatus" name="editUserStatus"
                                 class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
@@ -227,56 +182,60 @@
                             <option value="2">Inactive</option>
                         </select>
                     </div>
-                    <div class="mb-4 w-1/3">
+                </div>
+                <div class="flex gap-5">
+                    <div class="mb-4 w-1/2">
                         <label for="editFinancialYear" class="block text-lg font-medium text-gray-800">Financial
                             Year</label>
                         <input type="date" id="editFinancialYear" name="editFinancialYear"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               required/>
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               readonly
+                        />
                     </div>
-                </div>
-                <div class="flex gap-5">
-                    <div class="mb-4 w-1/3">
+
+                    <div class="mb-4 w-1/2">
                         <label for="editBusinessTarget" class="block text-lg font-medium text-gray-800">Business
                             Target</label>
                         <input type="text" id="editBusinessTarget" name="editBusinessTarget"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" &#x20b9; ___.00" required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="editAchievedTillDate" class="block text-lg font-medium text-gray-800">Achieved Till
-                            Date</label>
-                        <input type="text" id="editAchievedTillDate" name="editAchievedTillDate"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" &#x20b9; ___.00" required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="editBalanceToGo" class="block text-lg font-medium text-gray-800">Balance To
-                            Go</label>
-                        <input type="text" id="editBalanceToGo" name="editBalanceToGo"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" &#x20b9; ___.00" required/>
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               readonly
+                               placeholder=" &#x20b9; ___.00"/>
                     </div>
                 </div>
                 <div class="flex gap-5">
-                    <div class="mb-4 w-1/3">
-                        <label for="editDesignation" class="block text-lg font-medium text-gray-800">Designation</label>
+                    <div class="mb-4 w-1/2">
+                        <label for="editAchievedTillDate" class="block text-lg font-medium text-gray-800">Achieved Till
+                            Date</label>
+                        <input type="text" id="editAchievedTillDate" name="editAchievedTillDate"
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               readonly
+                               placeholder=" &#x20b9; ___.00"/>
+                    </div>
+                    <div class="mb-4 w-1/2">
+                        <label for="editBalanceToGo" class="block text-lg font-medium text-gray-800">Balance To
+                            Go</label>
+                        <input type="text" id="editBalanceToGo" name="editBalanceToGo"
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               readonly
+                               placeholder=" &#x20b9; ___.00"/>
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="mb-4 w-1/2">
+                        <label for="editDesignation" class="block text-lg font-medium text-gray-800">Designation and
+                            Role</label>
                         <input type="text" id="editDesignation" name="editDesignation"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder="Data Admin" required/>
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               readonly
+                               placeholder="Data Admin"/>
                     </div>
-                    <div class="mb-4 w-1/3">
-                        <label for="editRole" class="block text-lg font-medium text-gray-800">Role in a Company</label>
-                        <input type="text" id="editRole" name="editRole"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder="Managing Data " required/>
-                    </div>
-                    <div class="mb-4 w-1/3">
+                    <div class="mb-4 w-1/2">
                         <label for="editSalesManager" class="block text-lg font-medium text-gray-800">Sales
                             Manager</label>
                         <input type="text" id="editSalesManager" name="editSalesManager"
-                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                               placeholder=" Ram Prashad" required/>
+                               class="mt-2 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed"
+                               readonly
+                               placeholder=" Ram Prashad"/>
                     </div>
                 </div>
 
@@ -299,26 +258,6 @@
 
 
 
-<script>
-    const totalTargetElementNew = document.getElementById("newBusinessTarget");
-    const achievedTillDateElementNew = document.getElementById("newAchievedTillDate");
-    const balanceToGoNew = document.getElementById("newBalanceToGo");
-
-    function updateBalanceToGo() {
-        const totalTarget = parseFloat(totalTargetElementNew.value) || 0;
-        const achievedTillDate = parseFloat(achievedTillDateElementNew.value) || 0;
-
-        const balance = totalTarget - achievedTillDate;
-
-        balanceToGoNew.value = isNaN(balance) ? 0 : balance;
-    }
-
-    totalTargetElementNew.addEventListener("input", updateBalanceToGo);
-    achievedTillDateElementNew.addEventListener("input", updateBalanceToGo);
-
-    balanceToGoNew.addEventListener("focus", updateBalanceToGo);
-
-</script>
 
 <script>
     const totalTargetElement = document.getElementById("editBusinessTarget");
