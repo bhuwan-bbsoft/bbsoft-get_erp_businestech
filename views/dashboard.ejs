@@ -145,7 +145,7 @@
                     <div class="flex  justify-end">
                         <div class="space-x-1 mb-3">
                             <button
-                                    onclick="generatePDF(<%= JSON.stringify(sales) %>, 'sale' )"
+                                    onclick="generatePDF(<%= JSON.stringify(sales) %>, 'sales',  company )"
                                     class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
                             >
                                 <svg
@@ -441,6 +441,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.com/libraries/pdf.js"></script>
 
 <script>
     // Function to open the company modal
@@ -556,151 +557,142 @@
 </script>
 
 <script>
-    const company = {
-        name: "ABC Pvt Ltd",
-        address: "123, Business Street, City, Country",
-        city: "City",
-        state: "State",
-        country: "Country",
-        gstin: "GSTIN123456",
-        email: "contact@abc.com",
-        mobile: "+91 123 456 7890",
-        website: "www.abc.com",
-        pan_number: "ABCDE1234F",
-    };
+    const company = <%- JSON.stringify(company) %>;
 
     function generatePDF(data, type, company) {
-        const {jsPDF} = window.jspdf;
+        const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // A4 page size (210mm x 297mm)
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
 
-        // Get current date in yyyy-mm-dd format
         const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().split("T")[0]; // Get current date in yyyy-mm-dd format
+        const formattedDate = currentDate.toISOString().split("T")[0];
 
-        // Add company information at the top
-        doc.setFontSize(10); // Smaller font size
-        doc.text(company.name, 20, 20); // Company Name
-        doc.text(company.address, 20, 25); // Address
-        doc.text(
-            `City: ${company.city}, State: ${company.state}, Country: ${company.country}`,
-            20,
-            30
-        ); // City, State, Country
-        doc.text(`GSTIN: ${company.gstin}`, 20, 35); // GSTIN
-        doc.text(`Email: ${company.email} | Mobile: ${company.mobile}`, 20, 40); // Email and Mobile
-        doc.text(`Website: ${company.website}`, 20, 45); // Website
-        doc.text(`PAN: ${company.pan_number}`, 20, 50); // PAN Number
+        doc.setFontSize(12);
+        doc.text(company.name, (pageWidth - doc.getTextWidth(company.name)) / 2, 20);
+        doc.text(company.address, (pageWidth - doc.getTextWidth(company.address)) / 2, 25);
+        doc.text(`City: ${company.city}, State: ${company.state}, Country: ${company.country}`,
+            (pageWidth - 70) / 2, 30);
+        doc.text(`GSTIN: ${company.gstin}, Email: ${company.email} , Mobile: ${company.mobile}`,
+            (pageWidth - 150) / 2, 35);
+        doc.text(`Website: ${company.website}, PAN: ${company.pan_number}`, (pageWidth - 70) / 2, 40);
 
-        // Add the report title
-        const reportTitle = `${
-            type.charAt(0).toUpperCase() + type.slice(1)
-        } Report`;
-        doc.setFontSize(12); // Slightly bigger font for title
-        doc.text(
-            reportTitle,
-            pageWidth / 2 - doc.getTextWidth(reportTitle) / 2,
-            55
-        ); // Centered title
+        const reportTitle = `${type.charAt(0).toUpperCase() + type.slice(1)} Report`;
+        doc.setFontSize(12);
+        doc.text(reportTitle, pageWidth / 2 - doc.getTextWidth(reportTitle) / 2, 55);
 
-        // Line separator after the company info and title
-        doc.setLineWidth(0.5);
-        doc.line(20, 60, pageWidth - 20, 60);
-
-        // Add the headers for the table (with smaller font size)
-        let yPos = 65;
         const header = [
-            "Date",
-            "Product and Services",
-            "Additional description",
-            "Tally Serial Number",
-            "Edition",
-            "Amount Billed",
-            "GST",
-            "Total Amount Billed",
-            "Next Renewal Date",
-            "Remarks",
+            "Date", "Product and Services", "Additional description", "Tally Serial Number", "Edition",
+            "Amount Billed", "GST", "Total Amount Billed", "Next Renewal Date", "Remarks"
         ];
-        const columnWidths = [15, 20, 30, 20, 10, 20, 20, 20, 10, 10]; // Adjust the widths based on your preference
 
-        doc.setFontSize(8); // Smaller font size for table header
+        doc.setFontSize(8);
+        const columnWidth = 20;
+        const rowHeight = 10;
+        let yPos = 65;
+
+        // Function to wrap text based on column width and return the number of lines
+        function wrapText(doc, text, xPos, yPos, maxWidth) {
+            const words = text.split(' ');
+            let line = '';
+            let lineCount = 1; // Start with 1 line
+
+            const lineHeight = 3; // Space between lines
+            words.forEach((word) => {
+                const testLine = line ? line + ' ' + word : word;
+                const testWidth = doc.getTextWidth(testLine);
+
+                if (testWidth <= maxWidth) {
+                    line = testLine;
+                } else {
+                    doc.text(line, xPos, yPos);
+                    yPos += lineHeight;
+                    lineCount++; // Increment the line count
+                    line = word; // Start a new line with the current word
+                }
+            });
+            doc.text(line, xPos, yPos); // Draw the last line
+            return lineCount; // Return the number of lines used
+        }
+
+        // Dynamic Height Calculation for Headers
+        const headerLineCounts = [];
         header.forEach((column, index) => {
-            doc.text(
-                column,
-                20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
-                yPos
-            );
-            doc.rect(
-                20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
-                yPos - 5,
-                columnWidths[index],
-                5
-            ); // Add border for each cell
+            const xPos = 5 + index * columnWidth;
+            const lineCount = wrapText(doc, column, xPos, yPos + 5, columnWidth - 5); // Adjust for wrapping
+            headerLineCounts.push(lineCount); // Store the line count for each header column
         });
 
-        yPos += 5; // Space after the header row
+        // Get the maximum row height for the header
+        const headerRowHeight = Math.max(...headerLineCounts) + 2;
 
-        // Add the table data for sales or quotations
-        doc.setFontSize(7); // Smaller font for table data
-        doc.setTex;
+        // Draw table header with dynamic height based on wrapped text
+        header.forEach((column, index) => {
+            const xPos = 5 + index * columnWidth;
+            doc.rect(xPos, yPos, columnWidth, Math.max(headerRowHeight * 3, 10)); // Ensure minimum height of 10
+        });
+
+        yPos += Math.max(headerRowHeight * 3, 10) + 5; // Space after header
+
+        // Format the date and next renewal date
+        const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            return (
+                date.getFullYear() +
+                "-" +
+                ("0" + (date.getMonth() + 1)).slice(-2) +
+                "-" +
+                ("0" + date.getDate()).slice(-2)
+            ); // yyyy-mm-dd format
+        };
+
+        doc.setFontSize(8);
         data.forEach((item) => {
-            let rowHeight = 10;
+            let rowHeight = 0; // Track the maximum row height for the current data row
 
-            // Format the date and next renewal date
-            const formatDate = (dateString) => {
-                const date = new Date(dateString);
-                return (
-                    date.getFullYear() +
-                    "-" +
-                    ("0" + (date.getMonth() + 1)).slice(-2) +
-                    "-" +
-                    ("0" + date.getDate()).slice(-2)
-                ); // yyyy-mm-dd format
-            };
-
-            // Format the date and next_renewal_date fields
+            // Format date fields
             const formattedDateValue = formatDate(item.date);
             const formattedNextRenewalDate = formatDate(item.next_renewal_date);
 
+            const rowLineCounts = [];
+            // Calculate the number of lines for each column in the current data row
             header.forEach((column, index) => {
                 const cellValue =
-                    column === "Date"
-                        ? formattedDateValue
-                        : column === "Next Renewal"
-                            ? formattedNextRenewalDate
-                            : item[column.toLowerCase().replace(" ", "_")];
-                doc.text(
-                    cellValue ? cellValue.toString() : "-",
-                    20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
-                    yPos
-                );
-                doc.rect(
-                    20 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
-                    yPos - 5,
-                    columnWidths[index],
-                    rowHeight
-                );
+                    column === "Date" ? formattedDateValue :
+                        column === "Next Renewal" ? formattedNextRenewalDate :
+                            item[column.toLowerCase().replace(" ", "_")];
+
+                const xPos = 5 + index * columnWidth;
+                const lineCount = wrapText(doc, cellValue ? cellValue.toString() : "-", xPos, yPos, columnWidth - 5);
+
+                rowLineCounts.push(lineCount); // Store line counts for data row columns
             });
-            yPos += rowHeight; // Add spacing for the next row
+
+            // Get the maximum row height for the current data row
+            rowHeight = Math.max(...rowLineCounts) + 2;
+
+            // Draw the rectangles for the data row with dynamic height
+            header.forEach((column, index) => {
+                const xPos = 5 + index * columnWidth;
+                doc.rect(xPos, yPos - 5, columnWidth, Math.max(rowHeight * 3, 10)); // Ensure minimum height of 10
+            });
+
+            yPos += Math.max(rowHeight * 3, 10); // Increase the vertical position based on row height
 
             // Ensure the content doesn't exceed the A4 page size
             if (yPos > pageHeight - 20) {
                 doc.addPage();
-                yPos = 20; // Reset the position for the new page
+                yPos = 20;
             }
         });
 
-        // Save the PDF with dynamic file name based on the type and current date/time
-        const fileName = `${
-            type.charAt(0).toUpperCase() + type.slice(1)
-        }_report_${formattedDate}.pdf`;
+        const timestamp = new Date().toISOString().replace(/[-:T.]/g, "").slice(0, 14);
+        const fileName = `${type.charAt(0).toUpperCase() + type.slice(1)}_report_${timestamp}.pdf`;
         doc.save(fileName);
     }
 
-    function generateExcel(dataType, sales, quotations) {
+    function generateExcel(dataType, sales, quotations, columnToRemove="user_id") {
         const wb = XLSX.utils.book_new();
         let data;
         let sheetName;
@@ -718,6 +710,12 @@
                     ...filteredItem
                 } = item;
 
+                // Remove the specific column if it exists
+                if (columnToRemove && filteredItem.hasOwnProperty(columnToRemove)) {
+                    delete filteredItem[columnToRemove];
+                }
+
+                // Format date fields if they exist
                 if (filteredItem.date) {
                     filteredItem.date = new Date(filteredItem.date)
                         .toISOString()
@@ -778,39 +776,40 @@
 
         printWindow.document.write(`
                 <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;  width: 100%;">
-    <h1 style="font-size: 1.5rem; color: #333; font-weight: bold; margin-bottom: 10px;">ABC Pvt Ltd</h1>
-    <p style="color: #555;">123, Business Street, City, Country</p>
+    <h1 style="font-size: 1.5rem; color: #333; font-weight: bold; margin-bottom: 10px;">${company.name}</h1>
+    <p style="color: #555;"> ${company.address} - ${company.city} - ${company.state} - ${company.country} </p>
 
     <div style="display: flex; gap: 10px; text-align: left;justify-content:center;">
       <div style="display: flex; align-items: center; color: #555;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.071 4.514a3 3 0 003.858 0L21 8m0 0V5a2 2 0 00-2-2H5a2 2 0 00-2 2v3m18 0l-7.071 4.514a3 3 0 01-3.858 0L3 8"></path>
         </svg>
-        contact@abc.com
+        ${company.email}
       </div>
       <div style="display: flex; align-items: center; color: #555;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 10l1-4a2 2 0 012-2h2a2 2 0 012 2v4M7 7h.01M4 10v6a2 2 0 002 2h2a2 2 0 002-2v-6m5 0h2a2 2 0 012 2v4a2 2 0 01-2 2h-2m-6 0h.01M3 10h.01"></path>
         </svg>
-        +91 123 456 7890
+        ${company.mobile}
       </div>
       <div style="display: flex; align-items: center; color: #555;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a9 9 0 00-6.7 15.3A8.961 8.961 0 0112 21a8.961 8.961 0 006.7-2.7A9 9 0 0012 3z"></path>
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9"></path>
         </svg>
-        www.abc.com
+        ${company.website}
       </div>
     </div>
 
     <div style="margin-top: 16px; color: #555; font-size: 1.2rem; justify-content:center; display:flex; gap:10px;">
-      <p><strong>GSTIN:</strong> GSTIN123456</p>
-      <p><strong>PAN:</strong> ABCDE1234F</p>
+      <p><strong>GSTIN:</strong> ${company.gstin}</p>
+      <p><strong>PAN:</strong> ${company.pan_number}</p>
     </div>
   </div>
             `);
 
-        printWindow.document.write("<table border=1>");
+        printWindow.document.write("<style> table,th,td {border: 1px solid black} </style>")
+        printWindow.document.write("<table>");
         printWindow.document.write("<tr>");
         printWindow.document.write("<th> Date </th>");
         printWindow.document.write("<th> Products/Services </th>");
@@ -905,11 +904,7 @@
     }
 </script>
 
-<!-- chart  -->
-<script>
 
-
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
