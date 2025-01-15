@@ -6,6 +6,8 @@
             <button onclick="closeCompanyModal()" class="text-gray-500 hover:text-gray-700 text-lg">&times;</button>
         </div>
 
+        <div> <img src="../../logo/logo.png" alt="logo" /> </div>
+
         <!-- Modal Header -->
         <h2 class="text-3xl font-semibold text-center text-blue-600 mb-6" id="companyName"> <%- company?.name %> </h2>
 
@@ -20,107 +22,107 @@
             <!-- City -->
             <div>
                 <p class="text-lg font-medium text-gray-800">City:</p>
-                <p id="companyCity" class="text-gray-600"><%- company.city %></p>
+                <p id="companyCity" class="text-gray-600"><%- company?.city %></p>
             </div>
             <!-- State -->
             <div>
                 <p class="text-lg font-medium text-gray-800">State:</p>
-                <p id="companyState" class="text-gray-600"><%- company.state %></p>
+                <p id="companyState" class="text-gray-600"><%- company?.state %></p>
             </div>
             <!-- Country -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Country:</p>
-                <p id="companyCountry" class="text-gray-600"><%- company.country %></p>
+                <p id="companyCountry" class="text-gray-600"><%- company?.country %></p>
             </div>
             <!-- Mobile -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Mobile:</p>
-                <p id="companyMobile" class="text-gray-600"><%- company.mobile %></p>
+                <p id="companyMobile" class="text-gray-600"><%- company?.mobile %></p>
             </div>
             <!-- Pin Code -->
             <div>
                 <p class="text-lg font-medium text-gray-800">PIN CODE:</p>
-                <p id="pinCode" class="text-gray-600"><%- company.pincode %></p>
+                <p id="pinCode" class="text-gray-600"><%- company?.pincode %></p>
             </div>
             <!-- GST Number-->
             <div>
                 <p class="text-lg font-medium text-gray-800">GSTIN:</p>
-                <p id="gstNumber" class="text-gray-600"><%- company.gstin.toUpperCase() %></p>
+                <p id="gstNumber" class="text-gray-600"><%- company?.gstin.toUpperCase() %></p>
             </div>
             <!-- Email -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Email:</p>
-                <p id="companyEmail" class="text-gray-600"><%- company.email %></p>
+                <p id="companyEmail" class="text-gray-600"><%- company?.email %></p>
             </div>
             <!-- Website -->
             <div>
                 <p class="text-lg font-medium text-gray-800">Website:</p>
-                <p id="companyWebsite" class="text-gray-600"><%- company.website %></p>
+                <p id="companyWebsite" class="text-gray-600"><%- company?.website %></p>
             </div>
 
             <!-- PAN Number -->
             <div>
                 <p class="text-lg font-medium text-gray-800">PAN Number:</p>
-                <p id="panNumber" class="text-gray-600"><%- company.pan_number.toUpperCase() %></p>
+                <p id="panNumber" class="text-gray-600"><%- company?.pan_number.toUpperCase() %></p>
             </div>
 
             <!-- Financial Year Beginning  -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Financial Year Beginning:</p>
-                <p id="financialYearBeginning" class="text-gray-600"><%- company.financial_year_beginning.toISOString().split('T')[0] %></p>
+                <p id="financialYearBeginning" class="text-gray-600"><%- company?.financial_year_beginning.toISOString().split('T')[0] %></p>
             </div>
 
             <!-- Book Beginnings -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Books Beginning:</p>
-                <p id="booksBeginning" class="text-gray-600"><%- company.books_beginning.toISOString().split('T')[0] %></p>
+                <p id="booksBeginning" class="text-gray-600"><%- company?.books_beginning.toISOString().split('T')[0] %></p>
             </div>
 
             <!-- Currency -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Currency:</p>
-                <p id="currency" class="text-gray-600"><%- company.currency %></p>
+                <p id="currency" class="text-gray-600"><%- company?.currency %></p>
             </div>
             <!-- Bank Name -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Bank Name:</p>
-                <p id="bankName" class="text-gray-600"> <%- company.bank_name %> </p>
+                <p id="bankName" class="text-gray-600"> <%- company?.bank_name %> </p>
             </div>
             <!-- Account Number -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Account Number:</p>
-                <p id="accountNumber" class="text-gray-600"> <%- company.account_number %> </p>
+                <p id="accountNumber" class="text-gray-600"> <%- company?.account_number %> </p>
             </div>
             <!-- IFSC -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> IFSC:</p>
-                <p id="ifsc" class="text-gray-600"> <%- company.ifsc %> </p>
+                <p id="ifsc" class="text-gray-600"> <%- company?.ifsc %> </p>
             </div>
             <!-- Branch -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Branch:</p>
-                <p id="branch" class="text-gray-600"> <%- company.branch %> </p>
+                <p id="branch" class="text-gray-600"> <%- company?.branch %> </p>
             </div>
             <!-- Swift Code -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Swift Code:</p>
-                <p id="swiftCode" class="text-gray-600"> <%- company.swift_code %> </p>
+                <p id="swiftCode" class="text-gray-600"> <%- company?.swift_code %> </p>
             </div>
 
             <!-- UPI ID -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> UPI ID:</p>
-                <p id="upiId" class="text-gray-600"> <%- company.upi_id %> </p>
+                <p id="upiId" class="text-gray-600"> <%- company?.upi_id %> </p>
             </div>
             <!-- Whatsapp Number -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Whats App Number:</p>
-                <p id="whatsAppNumber" class="text-gray-600"> <%- company.whatsapp_number %> </p>
+                <p id="whatsAppNumber" class="text-gray-600"> <%- company?.whatsapp_number %> </p>
             </div>
             <!-- Instance ID -->
             <div>
                 <p class="text-lg font-medium text-gray-800"> Instance ID:</p>
-                <p id="instanceId" class="text-gray-600"> <%- company.instance_id %> </p>
+                <p id="instanceId" class="text-gray-600"> <%- company?.instance_id %> </p>
             </div>
 
 

@@ -14,7 +14,38 @@
 <div class="flex">
     <div class="w-[10%]"><%- include('partials/menu') %></div>
     <div class="w-[90%] mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+        <div class="flex justify-between ">
+            <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+            <% if(userLevel == 1) {  %>
+                <div class="w-[30%] flex flex-col gap-2">
+                    <h3 class="text-2xl font-bold">Total Progress</h3>
+                    <div class="bg-gray-200 dark:bg-gray-700">
+                        <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                             style="width: <%= (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100 %>%">
+                            <%= (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100 %> %
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-0">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Target</span>
+                            <span class="text-lg text-gray-600">:</span
+                            ><span class="text-green-600 font-bold"> <%- totalFinancialReport.total_target %> </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Achieved</span>
+                            <span class="text-lg text-gray-600">:</span>
+                            <span class="text-[#36A2EB] font-bold" > <%- totalFinancialReport.total_achieved %> </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Balance to go</span>
+                            <span class="text-lg text-gray-600">:</span>
+                            <span class="text-[#FFCE56] font-bold" > <%- totalFinancialReport.total_balance_to_go %> </span>
+                        </div>
+                    </div>
+                </div>
+            <% }  %>
+        </div>
+
 
         <!-- show only is userLevel is user -->
         <% if(userLevel === 2) { %>
@@ -53,43 +84,39 @@
                     </div>
                     <div class="flex w-1/2 flex-col gap-6">
                         <div class="flex items-center space-x-2 text-lg text-gray-800">
-                <span>Financial Year:</span
-                ><span class="font-semibold"><%- financialTarget[0].financial_year %></span>
+                            <span>Financial Year:</span>
+                            <span class="font-semibold"><%- financialTarget[0].financial_year %></span>
                         </div>
                         <div class="mr-5 flex items-center gap-6">
-                            <div
-                                    class="flex h-32 w-32 items-center justify-center rounded-full bg-indigo-600 text-white text-2xl font-bold shadow-md"
-                            >
-
-                                <!-- ----------------------- -->
-
-                                chart
-
-                                <!-- ----------------------- -->
-
-
+                            <div class="flex flex-col">
+                                <div class="flex h-32 w-32 items-center justify-center rounded-full bg-indigo-600 text-white text-2xl font-bold shadow-md">
+                                    <canvas id="myPieChart"></canvas>
+                                </div>
+                                <div class="flex flex-col gap-2 text-sm">
+                                    <div class="flex gap-1"><span class="px-2 py-1/2 bg-green-50 border "
+                                                                  id="color-balance"></span> Balance To GO
+                                    </div>
+                                    <div class="flex gap-1"><span class="px-2 py-1/2 bg-green-50 border "
+                                                                  id="color-achieve"></span> Achieved Till Date
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="flex flex-col gap-4">
                                 <div class="flex items-center space-x-2">
-                    <span
-                            class="text-lg font-semibold text-gray-700 min-w-[7rem]"
-                    >Target</span
-                    ><span class="text-lg text-gray-600">:</span
+                                    <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Target</span>
+                                    <span class="text-lg text-gray-600">:</span
                                     ><span class="text-green-600 font-bold" id="business_target"></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                    <span
-                            class="text-lg font-semibold text-gray-700 min-w-[7rem]"
-                    >Achieved</span
-                    ><span class="text-lg text-gray-600">:</span
-                                    ><span class="text-blue-600 font-bold" id="achieved_till_date"></span>
+                                    <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Achieved</span>
+                                    <span class="text-lg text-gray-600">:</span>
+                                    <span class="text-[#36A2EB] font-bold" id="achieved_till_date"></span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                    <span
-                            class="text-lg font-semibold text-gray-700 min-w-[7rem]"
-                    >Balance to go</span
-                    ><span class="text-lg text-gray-600">:</span
-                                    ><span class="text-red-600 font-bold" id="balance_to_go"></span>
+                                    <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Balance to go</span>
+                                    <span class="text-lg text-gray-600">:</span>
+                                    <span class="text-[#FFCE56] font-bold" id="balance_to_go"></span>
                                 </div>
                             </div>
                         </div>
@@ -250,17 +277,16 @@
                                     <td class="min-w-[8rem]">
                                         <%= sale.date.toISOString().split('T')[0] %>
                                     </td>
-                                    <td><%= sale.product_and_services %></td>
-                                    <td><%=     %></td>
-                                    <td><%= sale.additional_description %></td>
-                                    <td><%= sale.tally_serial_number %></td>
+                                    <td><%= sale.service_name %></td>
+<!--                                    <td><%=                 %></td>-->
+                                    <td><%= sale.description %></td>
+                                    <td><%= sale.serial_no %></td>
                                     <td><%= sale.edition %></td>
                                     <td><%= sale.amount_billed %></td>
-                                    <td><%= sale.gst %></td>
-                                    <td><%= sale.total_amount_billed %></td>
+                                    <td><%= sale.gst_amount %></td>
+                                    <td><%= sale.total_amount %></td>
                                     <td class="min-w-[8rem]">
-                                        <%= new
-                                        Date(sale.next_renewal_date).toISOString().split('T')[0]
+                                        <%= sale.next_renewal_date
                                         %>
                                     </td>
                                     <td><%= sale.remarks %></td>
@@ -388,18 +414,14 @@
                                     <td class="min-w-[8rem]">
                                         <%= quotation.date.toISOString().split('T')[0] %>
                                     </td>
-                                    <td><%= quotation.product_and_services %></td>
-                                    <td><%= quotation.additional_description %></td>
-                                    <td><%= quotation.tally_serial_number %></td>
+                                    <td><%= quotation.service_name %></td>
+                                    <td><%= quotation.description %></td>
+                                    <td><%= quotation.serial_no %></td>
                                     <td><%= quotation.edition %></td>
                                     <td><%= quotation.amount_billed %></td>
-                                    <td><%= quotation.gst %></td>
-                                    <td><%= quotation.total_amount_billed %></td>
-                                    <td class="flex flex-col min-w-[8rem]">
-                                        <%= new
-                                        Date(quotation.next_renewal_date).toISOString().split('T')[0]
-                                        %>
-                                    </td>
+                                    <td><%= quotation.gst_amount %></td>
+                                    <td><%= quotation.total_amount %></td>
+                                    <td class="flex flex-col min-w-[8rem]"><%= quotation.next_renewal_date%></td>
                                     <td><%= quotation.remarks %></td>
                                 </tr>
                             <% }); %>
@@ -411,6 +433,16 @@
         </div>
     </div>
 </div>
+
+
+<% if (errorMessage!== null) { %>
+    <script type="text/javascript">
+        alert("<%= errorMessage %>");
+    </script>
+<% } %>
+
+
+
 
 <script>
     function formatNumberWithCommas(number) {
@@ -560,7 +592,7 @@
     const company = <%- JSON.stringify(company) %>;
 
     function generatePDF(data, type, company) {
-        const { jsPDF } = window.jspdf;
+        const {jsPDF} = window.jspdf;
         const doc = new jsPDF();
 
         const pageWidth = doc.internal.pageSize.width;
@@ -692,7 +724,7 @@
         doc.save(fileName);
     }
 
-    function generateExcel(dataType, sales, quotations, columnToRemove="user_id") {
+    function generateExcel(dataType, sales, quotations, columnToRemove = "user_id") {
         const wb = XLSX.utils.book_new();
         let data;
         let sheetName;
@@ -905,8 +937,46 @@
 </script>
 
 
+<script>
+
+    window.onload = function () {
+        // Get the canvas element
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        const financialTargetJs = <%- JSON.stringify(financialTarget) %>;
+
+        const color_balance = document.getElementById("color-balance");
+        const color_achieved = document.getElementById("color-achieve");
+
+        color_balance.style.backgroundColor = "#FFCE56";
+        color_achieved.style.backgroundColor = "#36A2EB";
+
+        // Create a new Pie chart
+        var myPieChart = new Chart(ctx, {
+            type: 'pie', // Pie chart type
+            data: {
+                labels: ['Achieved Till Date', 'Balance To Go'], // Data labels
+                datasets: [{
+                    data: [financialTargetJs[0].achieved_till_date, financialTargetJs[0].balance_to_go],
+                    backgroundColor: ['#36A2EB', '#FFCE56'], // Segment colors
+                    hoverBackgroundColor: ['#36A2EB', '#FFCE56'], // Hover colors
+                }]
+            },
+            options: {
+                responsive: true, // Make the chart responsive
+                plugins: {
+                    legend: {
+                        display: false, // Hide the legend
+                    },
+                },
+            }
+        });
+    };
+</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>

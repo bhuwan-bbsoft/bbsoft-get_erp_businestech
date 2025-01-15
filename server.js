@@ -36,7 +36,7 @@ app.use(session({
 
 // Authentication middleware
 const authenticateUser = (req, res, next) => {
-  if (req.session.userId) {
+  if (req.session.username) {
     next();
   } else {
     res.redirect('/login');
@@ -68,7 +68,7 @@ app.post('/register', async (req, res) => {
 });
 
 const redirectIfAuthenticated = (req, res, next) => {
-  if (req.session.userId) {
+  if (req.session.username) {
     return res.redirect('/dashboard');
   }
   next();
@@ -82,12 +82,12 @@ app.post('/login', redirectIfAuthenticated, async (req, res) => {
   const { username, password } = req.body;
   try {
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+
     if (result.rows.length > 0) {
       const user = result.rows[0];
       if (await bcrypt.compare(password, user.password)) {
-        req.session.userId = user.id;
+        req.session.username = user.username;
         req.session.userLevel = user.user_level;
-
         return res.redirect('/dashboard');
       } else {
         return res.status(400).send('Invalid credentials');
@@ -128,26 +128,28 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
             ON ft.financial_year = ft.financial_year  
         WHERE ft.financial_year = '${selectedFinancialYear}'  
           AND s.date >= TO_DATE(CONCAT(SUBSTRING(ft.financial_year, 1, 4), '-04-01'), 'YYYY-MM-DD') 
-          AND s.date <= TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')
-          
+          AND s.date <= TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')  
     `;
     let quotationsQuery = 'SELECT * FROM quotation ';
     let companyQuery = 'SELECT * FROM company where id=1';
     let usersQuery = `SELECT * from users`; 
-    let currentUser = `SELECT * from users where id = ${req.session.userId} `
+    let currentUser = `SELECT * from users where username = '${req.session.username}' `
     let financialTarget = `SELECT * FROM public.financial_target`;
+    let totalFinancialReportQuery = `select sum(business_target) as total_target, sum(achieved_till_date) as total_achieved, sum(balance_to_go) as total_balance_to_go from financial_target`;
     let financialYearQuery = `select distinct financial_year from financial_target order by financial_year desc`
-    let allUserDetailsQuery = `select u.id,u.name, u.username,ul.name as role,s.name as status,ft.financial_year,ft.business_target, ft.achieved_till_date, ft.balance_to_go, ft.designation, ft.sales_manager  
-                                   from users u
-                                   inner join status s on s.level = u.status
-                                   inner join user_level ul on ul.level = u.user_level
-                                   left join financial_target ft on ft.user_id = u.id`;
+    let allUserDetailsQuery = `select u.id,u.name, u.username,ul.name as role,s.name as status,ft.financial_year,ft.business_target, ft.achieved_till_date, ft.balance_to_go, ft.designation, ft.sales_manager
+                               from users u
+                                      inner join status s on s.level = u.status
+                                      inner join user_level ul on ul.level = u.user_level
+                                      left join financial_target ft on ft.username  = u.username ;`;
 
-    
+
+
     if (req.session.userLevel === 2) {
-      financialTarget += ` WHERE user_id = ${req.session.userId} order by financial_year desc `;
-      salesQuery += ` and s.user_id = ${req.session.userId} `;
-      quotationsQuery += ` WHERE user_id = ${req.session.userId} order by id desc`;
+    console.log("user level from inside ", req.session.userLevel)
+      financialTarget += ` WHERE username = ${req.session.username} order by financial_year desc `;
+      salesQuery += ` and s.created_by = ${req.session.username} `;
+      quotationsQuery += ` WHERE created_by = ${req.session.username} order by id desc`;
     }
 
 
@@ -165,10 +167,10 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
     const financialTargetResult = await pool.query(financialTarget);
     const allUserDetailsResult = await  pool.query(allUserDetailsQuery);
     const financialYearResult = await pool.query(financialYearQuery)
-
-
-
-    
+    const totalFinancialReportResult = await pool.query(totalFinancialReportQuery);
+    const sessionUserLevel = req.session.userLevel;
+    const sessionUserName = req.session.username;
+    console.log("session user level ", sessionUserLevel)
     res.render('dashboard', { 
       sales: salesResult.rows, 
       quotations: quotationsResult.rows,
@@ -178,14 +180,16 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
       currentUser: currentUserResult.rows[0],
       financialTarget: financialTargetResult.rows,
       financialYears: financialYearResult.rows,
+      totalFinancialReport: totalFinancialReportResult.rows[0],
       selectedFinancialYear: selectedFinancialYear,
-      userLevel: req.session.userLevel,
-      userId: req.session.userId
-
+      userLevel: sessionUserLevel,
+      username: sessionUserName,
+      errorMessage: null,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error fetching dashboard data');
+    // res.status(500).send('Error fetching dashboard data');
+    res.render('dashboard', { errorMessage: 'Error fetching dashboard data' });
   }
 });
 
