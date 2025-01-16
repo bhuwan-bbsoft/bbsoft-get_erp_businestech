@@ -159,21 +159,25 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
         let financialYearQuery = `select distinct financial_year
                                   from financial_target
                                   order by financial_year desc`
-        let allUserDetailsQuery = `select u.id,
+        let allUserDetailsQuery = `SELECT u.id,
                                           u.name,
                                           u.username,
-                                          ul.name as role,
-                                          s.name  as status,
+                                          ul.name AS role,
+                                          s.name AS status,
                                           ft.financial_year,
                                           ft.business_target,
                                           ft.achieved_till_date,
                                           ft.balance_to_go,
                                           ft.designation,
                                           ft.sales_manager
-                                   from users u
-                                            inner join status s on s.level = u.status
-                                            inner join user_level ul on ul.level = u.user_level
-                                            left join financial_target ft on ft.username = u.username;`;
+                                   FROM users u
+                                            INNER JOIN status s ON s.level = u.status
+                                            INNER JOIN user_level ul ON ul.level = u.user_level
+                                            LEFT JOIN financial_target ft ON ft.username = u.username
+                                   ORDER BY
+                                       (ft.financial_year IS NULL) ASC,
+                                       ft.financial_year DESC,
+                                       u.username ASC`;
 
         const currentUserResult = await pool.query(currentUser);
         const currentUserResultData = currentUserResult.rows[0];
@@ -197,6 +201,7 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
         const financialYearResult = await pool.query(financialYearQuery)
         const totalFinancialReportResult = await pool.query(totalFinancialReportQuery);
         const sessionUserName = req.session.username;
+
 
 
         res.render('dashboard', {

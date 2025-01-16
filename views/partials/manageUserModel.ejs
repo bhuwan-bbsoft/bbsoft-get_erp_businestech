@@ -22,6 +22,7 @@
                 <tr>
                     <th class="px-4 py-2 text-left text-lg font-medium text-gray-700">Name</th>
                     <th class="px-4 py-2 text-left text-lg font-medium text-gray-700">User Name</th>
+                    <th class="px-4 py-2 text-left text-lg font-medium text-gray-700">Financial Year</th>
                     <th class="px-4 py-2 text-left text-lg font-medium text-gray-700">Role</th>
                     <th class="px-4 py-2 text-left text-lg font-medium text-gray-700">Status</th>
                     <th class="px-4 py-2 text-left text-lg font-medium text-gray-700">Target</th>
@@ -35,15 +36,16 @@
                 <tbody>
                 <% allUserDetails.forEach(userDetal => { %>
                     <tr>
-                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.name %> </td>
-                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.username %></td>
-                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.role %> </td>
+                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.name ? userDetal.name : '-' %> </td>
+                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.username ? userDetal.username : '-' %></td>
+                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.financial_year ? userDetal.financial_year: "-" %></td>
+                        <td class="px-4 py-2 text-gray-700"> <%- userDetal.role ? userDetal.role : "-" %> </td>
                         <td class="px-4 py-2 text-gray-700"><span
                                     class="<%- userDetal.status === 'Active' ? 'bg-green-800 py-1 px-2 rounded-lg text-white' : 'bg-red-700 py-1 px-2 rounded-lg text-white' %>"> <%- userDetal.status %> </span>
                         </td>
-                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.business_target != null ? " &#x20b9; " + userDetal.business_target : "-" %> </td>
-                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.achieved_till_date != null ? " &#x20b9; " + userDetal.achieved_till_date : "-" %> </td>
-                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.balance_to_go != null ? " &#x20b9; " + userDetal.balance_to_go : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.business_target !== null ?  userDetal.business_target : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.achieved_till_date !== null ?   userDetal.achieved_till_date : "-" %> </td>
+                        <td class="px-4 py-2 text-gray-700">  <%- userDetal.balance_to_go !== null ?   userDetal.balance_to_go : "-" %> </td>
                         <td class="px-4 py-2 text-gray-700"> <%- userDetal.designation ? userDetal.designation : "-" %> </td>
                         <td class="px-4 py-2 text-gray-700"> <%- userDetal.sales_manager ? userDetal.sales_manager : "-" %> </td>
                         <td class="px-4 py-2 text-gray-700">
