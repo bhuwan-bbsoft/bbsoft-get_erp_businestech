@@ -16,13 +16,16 @@
     <div class="w-[90%] mx-auto px-4 py-8">
         <div class="flex justify-between ">
             <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-            <% if(userLevel == 1) {  %>
+            <% if(currentUser.user_level == 1) { %>
+                <%
+                let reportPercentage = (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100
+                %>
                 <div class="w-[30%] flex flex-col gap-2">
                     <h3 class="text-2xl font-bold">Total Progress</h3>
                     <div class="bg-gray-200 dark:bg-gray-700">
                         <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-                             style="width: <%= (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100 %>%">
-                            <%= (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100 %> %
+                             style="width: <%= reportPercentage %>%">
+                            <%= reportPercentage.toFixed(2) %> %
                         </div>
                     </div>
                     <div class="flex flex-col gap-0">
@@ -34,21 +37,21 @@
                         <div class="flex items-center space-x-2">
                             <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Achieved</span>
                             <span class="text-lg text-gray-600">:</span>
-                            <span class="text-[#36A2EB] font-bold" > <%- totalFinancialReport.total_achieved %> </span>
+                            <span class="text-[#36A2EB] font-bold"> <%- totalFinancialReport.total_achieved %> </span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="text-lg font-semibold text-gray-700 min-w-[7rem]">Balance to go</span>
                             <span class="text-lg text-gray-600">:</span>
-                            <span class="text-[#FFCE56] font-bold" > <%- totalFinancialReport.total_balance_to_go %> </span>
+                            <span class="text-[#FFCE56] font-bold"> <%- totalFinancialReport.total_balance_to_go %> </span>
                         </div>
                     </div>
                 </div>
-            <% }  %>
+            <% } %>
         </div>
 
 
         <!-- show only is userLevel is user -->
-        <% if(userLevel === 2) { %>
+        <% if(currentUser.user_level === 2) { %>
             <!-- user target  -->
             <div class="mb-4">
                 <div
@@ -59,33 +62,33 @@
                 <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
                 >Name</span
                 ><span class="text-lg text-gray-600">:</span
-                            ><span class="text-gray-800"><%- currentUser.name %></span>
+                            ><span class="text-gray-800"><%- currentUser?.name %></span>
                         </div>
                         <div class="flex items-center space-x-2">
                 <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
                 >Designation</span
                 ><span class="text-lg text-gray-600">:</span
-                            ><span class="text-gray-800"><%- financialTarget[0].designation %></span>
+                            ><span class="text-gray-800"><%- financialTarget[0]?.designation %></span>
                         </div>
                         <div class="flex items-center space-x-2">
                 <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
                 >Role</span
                 ><span class="text-lg text-gray-600">:</span
                             ><span class="text-gray-800"
-                            ><%- financialTarget[0].role %></span
+                            ><%- financialTarget[0]?.role %></span
                             >
                         </div>
                         <div class="flex items-center space-x-2">
                 <span class="text-lg font-semibold text-gray-700 min-w-[7rem]"
                 >Manager</span
                 ><span class="text-lg text-gray-600">:</span
-                            ><span class="text-gray-800"><%- financialTarget[0].sales_manager %></span>
+                            ><span class="text-gray-800"><%- financialTarget[0]?.sales_manager %></span>
                         </div>
                     </div>
                     <div class="flex w-1/2 flex-col gap-6">
                         <div class="flex items-center space-x-2 text-lg text-gray-800">
                             <span>Financial Year:</span>
-                            <span class="font-semibold"><%- financialTarget[0].financial_year %></span>
+                            <span class="font-semibold"><%- financialTarget[0]?.financial_year %></span>
                         </div>
                         <div class="mr-5 flex items-center gap-6">
                             <div class="flex flex-col">
@@ -260,25 +263,34 @@
                             <thead>
                             <tr class="[&>th]:py-2 [&>th]:px-4 [&>th]:border-b">
                                 <th>Date</th>
-                                <th>Product/Service</th>
-                                <th>Additional Details</th>
-                                <th>Tally S.No (Batch)</th>
+                                <th>Service Name</th>
+                                <th>Description</th>
+                                <th>Serial Number</th>
                                 <th>Edition</th>
                                 <th>Amount Billed (&#x20b9;)</th>
-                                <th>GST (&#x20b9;)</th>
-                                <th>Total Amount Billed (&#x20b9;)</th>
-                                <th>Next Renewal Date</th>
-                                <th>Remarks to type</th>
+                                <th>GST Amount(&#x20b9;)</th>
+                                <th>Total Amount (&#x20b9;)</th>
+                                <th>Next Renew Date</th>
+                                <th>Remarks</th>
                             </tr>
                             </thead>
                             <tbody>
+                            <%
+                            let amountSales = 0;
+                            let gstSales = 0;
+                            let totalSales = 0;
+                            %>
                             <% sales.forEach(sale => { %>
+                                <%
+                                    amountSales += parseFloat(sale.amount_billed);
+                                    gstSales += parseFloat(sale.gst_amount);
+                                    totalSales += parseFloat(sale.total_amount);
+                                %>
                                 <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b">
                                     <td class="min-w-[8rem]">
                                         <%= sale.date.toISOString().split('T')[0] %>
                                     </td>
                                     <td><%= sale.service_name %></td>
-<!--                                    <td><%=                 %></td>-->
                                     <td><%= sale.description %></td>
                                     <td><%= sale.serial_no %></td>
                                     <td><%= sale.edition %></td>
@@ -292,6 +304,22 @@
                                     <td><%= sale.remarks %></td>
                                 </tr>
                             <% }); %>
+                            <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b [&>td]:font-semibold">
+                                <td></td>
+                                <td class="min-w-[8rem] font-semibold flex items-center justify-center">
+                                    Total
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td> <%- amountSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
+                                <td><%- gstSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                <td><%- totalSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                <td class="min-w-[8rem]">
+
+                                </td>
+                                <td></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -397,19 +425,29 @@
                             <thead>
                             <tr class="[&>th]:py-2 [&>th]:px-4 [&>th]:border-b">
                                 <th>Date</th>
-                                <th>Product/Service</th>
-                                <th>Additional Description</th>
-                                <th>Tally S.No (Batch)</th>
+                                <th>Service Name</th>
+                                <th>Description</th>
+                                <th>Serial Number</th>
                                 <th>Edition</th>
                                 <th>Amount Billed (&#x20b9;)</th>
-                                <th>GST (&#x20b9;)</th>
-                                <th>Total Amount Billed (&#x20b9;)</th>
-                                <th>Next Renewal Date</th>
-                                <th>Remarks to Type</th>
+                                <th>GST Amount(&#x20b9;)</th>
+                                <th>Total Amount (&#x20b9;)</th>
+                                <th>Next Renew Date</th>
+                                <th>Remarks</th>
                             </tr>
                             </thead>
                             <tbody>
+                            <%
+                            let amountQuotation = 0;
+                            let gstQuotation = 0;
+                            let totalQuotation = 0;
+                            %>
                             <% quotations.forEach(quotation => { %>
+                                <%
+                                    amountQuotation += parseFloat(quotations.amount_billed);
+                                    gstQuotation += parseFloat(quotations.gst_amount);
+                                    totalQuotation += parseFloat(quotations.total_amount);
+                                %>
                                 <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b">
                                     <td class="min-w-[8rem]">
                                         <%= quotation.date.toISOString().split('T')[0] %>
@@ -421,10 +459,26 @@
                                     <td><%= quotation.amount_billed %></td>
                                     <td><%= quotation.gst_amount %></td>
                                     <td><%= quotation.total_amount %></td>
-                                    <td class="flex flex-col min-w-[8rem]"><%= quotation.next_renewal_date%></td>
+                                    <td class="flex flex-col min-w-[8rem]"><%= quotation.next_renewal_date %></td>
                                     <td><%= quotation.remarks %></td>
                                 </tr>
                             <% }); %>
+                            <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b [&>td]:font-semibold">
+                                <td></td>
+                                <td class="min-w-[8rem] font-semibold flex items-center justify-center">
+                                    Total
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td> <%- amountQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
+                                <td><%- gstQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                <td><%- totalQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                <td class="min-w-[8rem]">
+
+                                </td>
+                                <td></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -434,15 +488,28 @@
     </div>
 </div>
 
+<% if (typeof errorMessage !== 'undefined') { %>
+    <div class="fixed top-2 left-1/2">
+        <div class="error">
+            <div id="toast-danger" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                    </svg>
+                    <span class="sr-only">Error icon</span>
+                </div>
+                <div class="ms-3 text-sm font-normal"><%- errorMessage %></div>
+                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
-<% if (errorMessage!== null) { %>
-    <script type="text/javascript">
-        alert("<%= errorMessage %>");
-    </script>
 <% } %>
-
-
-
 
 <script>
     function formatNumberWithCommas(number) {
@@ -450,7 +517,8 @@
     }
 
     const financialTargetJs = <%- JSON.stringify(financialTarget) %>;
-    const userLevelJs = <%- userLevel %>;
+    const userLevelJs = <%- currentUser.user_level %>;
+
 
     if (userLevelJs !== 1 && financialTargetJs && financialTargetJs.length > 0) {
         const businessTarget = financialTargetJs[0].business_target;
