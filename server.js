@@ -130,16 +130,19 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
         let salesQuery = `
             SELECT distinct s.*
             FROM sales s
-                     JOIN financial_target ft
-                          ON ft.financial_year = ft.financial_year
+            JOIN financial_target ft
+            ON ft.financial_year = ft.financial_year
             WHERE ft.financial_year = '${selectedFinancialYear}'
               AND s.date >= TO_DATE(CONCAT(SUBSTRING(ft.financial_year, 1, 4), '-04-01'), 'YYYY-MM-DD')
-              AND s.date <=
-                  TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')
+              AND s.date <= TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')
         `;
-        // let salesReportQuery = `select sum(amount_billed) as amount, sum(gst_amount) as gst, sum(total_amount) as total from sales`;
-        // let quotationReport
-        let quotationsQuery = 'SELECT * FROM quotation ';
+        let quotationsQuery = `SELECT distinct q.* FROM quotation q 
+                                        JOIN financial_target ft
+                                        ON ft.financial_year = ft.financial_year
+                                        WHERE ft.financial_year = '${selectedFinancialYear}'
+                                            AND q.date >= TO_DATE(CONCAT(SUBSTRING(ft.financial_year, 1, 4), '-04-01'), 'YYYY-MM-DD')
+                                            AND q.date <= TO_DATE(CONCAT((CAST(SUBSTRING(ft.financial_year, 1, 4) AS INTEGER) + 1), '-03-31'), 'YYYY-MM-DD')
+                            `;
         let companyQuery = 'SELECT * FROM company where id=1';
         let usersQuery = `SELECT *
                           from users`;
@@ -178,7 +181,7 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
         if (currentUserResultData.user_level === 2) {
             financialTarget += ` WHERE username = '${currentUserResultData.username}' and financial_year ='${selectedFinancialYear}' order by financial_year desc `;
             salesQuery += ` and s.created_by = '${currentUserResultData.username}' `;
-            quotationsQuery += ` WHERE created_by = '${currentUserResultData.username}' order by id desc`;
+            quotationsQuery += ` and q.created_by = '${currentUserResultData.username}' order by id desc`;
         }
 
 

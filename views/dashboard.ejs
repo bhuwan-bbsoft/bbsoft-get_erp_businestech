@@ -18,7 +18,7 @@
             <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
             <% if(currentUser.user_level == 1) { %>
                 <%
-                let reportPercentage = (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100
+                    let reportPercentage = (totalFinancialReport.total_achieved / totalFinancialReport.total_target) * 100
                 %>
                 <div class="w-[30%] flex flex-col gap-2">
                     <h3 class="text-2xl font-bold">Total Progress</h3>
@@ -304,22 +304,24 @@
                                     <td><%= sale.remarks %></td>
                                 </tr>
                             <% }); %>
-                            <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b [&>td]:font-semibold">
-                                <td></td>
-                                <td class="min-w-[8rem] font-semibold flex items-center justify-center">
-                                    Total
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td> <%- amountSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
-                                <td><%- gstSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
-                                <td><%- totalSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
-                                <td class="min-w-[8rem]">
+                            <% if(sales && sales.length > 0){ %>
+                                <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b [&>td]:font-semibold">
+                                    <td></td>
+                                    <td class="min-w-[8rem] font-semibold flex items-center justify-end">
+                                        Total
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td> <%- amountSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
+                                    <td><%- gstSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                    <td><%- totalSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                    <td class="min-w-[8rem]">
 
-                                </td>
-                                <td></td>
-                            </tr>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -444,9 +446,9 @@
                             %>
                             <% quotations.forEach(quotation => { %>
                                 <%
-                                    amountQuotation += parseFloat(quotations.amount_billed);
-                                    gstQuotation += parseFloat(quotations.gst_amount);
-                                    totalQuotation += parseFloat(quotations.total_amount);
+                                    amountQuotation += parseFloat(quotation.amount_billed);
+                                    gstQuotation += parseFloat(quotation.gst_amount);
+                                    totalQuotation += parseFloat(quotation.total_amount);
                                 %>
                                 <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b">
                                     <td class="min-w-[8rem]">
@@ -463,22 +465,24 @@
                                     <td><%= quotation.remarks %></td>
                                 </tr>
                             <% }); %>
-                            <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b [&>td]:font-semibold">
-                                <td></td>
-                                <td class="min-w-[8rem] font-semibold flex items-center justify-center">
-                                    Total
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td> <%- amountQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
-                                <td><%- gstQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
-                                <td><%- totalQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
-                                <td class="min-w-[8rem]">
+                            <% if(quotations && quotations.length > 0) { %>
+                                <tr class="[&>td]:py-2 [&>td]:px-4 [&>td]:border-b [&>td]:font-semibold">
+                                    <td></td>
+                                    <td class="min-w-[8rem] font-semibold flex items-center justify-end">
+                                        Total
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td> <%- amountQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")%> </td>
+                                    <td><%- gstQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                    <td><%- totalQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                    <td class="min-w-[8rem]">
 
-                                </td>
-                                <td></td>
-                            </tr>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -491,18 +495,25 @@
 <% if (typeof errorMessage !== 'undefined') { %>
     <div class="fixed top-2 left-1/2">
         <div class="error">
-            <div id="toast-danger" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+            <div id="toast-danger"
+                 class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                 role="alert">
                 <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                         viewBox="0 0 20 20">
                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
                     </svg>
                     <span class="sr-only">Error icon</span>
                 </div>
                 <div class="ms-3 text-sm font-normal"><%- errorMessage %></div>
-                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
+                <button type="button"
+                        class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                        data-dismiss-target="#toast-danger" aria-label="Close">
                     <span class="sr-only">Close</span>
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                         viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                 </button>
             </div>
@@ -663,6 +674,11 @@
         const {jsPDF} = window.jspdf;
         const doc = new jsPDF();
 
+        if (data.length === 0) {
+            alert("Unable to export data into PDF as there is no data.");
+            return; // Exit the function if no data is present
+        }
+
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
 
@@ -683,8 +699,8 @@
         doc.text(reportTitle, pageWidth / 2 - doc.getTextWidth(reportTitle) / 2, 55);
 
         const header = [
-            "Date", "Product and Services", "Additional description", "Tally Serial Number", "Edition",
-            "Amount Billed", "GST", "Total Amount Billed", "Next Renewal Date", "Remarks"
+            "Date", "Service Name", "Description", "Serial No", "Edition",
+            "Amount Billed", "GST Amount", "Total Amount", "Next Renew Date", "Remarks"
         ];
 
         doc.setFontSize(8);
@@ -747,20 +763,24 @@
             ); // yyyy-mm-dd format
         };
 
+        let totalAmountBilled = 0;
+        let totalGstAmount = 0;
+        let totalAmount = 0;
+
         doc.setFontSize(8);
         data.forEach((item) => {
             let rowHeight = 0; // Track the maximum row height for the current data row
 
             // Format date fields
             const formattedDateValue = formatDate(item.date);
-            const formattedNextRenewalDate = formatDate(item.next_renewal_date);
+            const formattedNextRenewalDate = formatDate(item.next_renew_date);
 
             const rowLineCounts = [];
             // Calculate the number of lines for each column in the current data row
             header.forEach((column, index) => {
                 const cellValue =
                     column === "Date" ? formattedDateValue :
-                        column === "Next Renewal" ? formattedNextRenewalDate :
+                        column === "Next Renew Date" ? (item.next_renew_date ? formattedNextRenewalDate : "") :
                             item[column.toLowerCase().replace(" ", "_")];
 
                 const xPos = 5 + index * columnWidth;
@@ -780,6 +800,11 @@
 
             yPos += Math.max(rowHeight * 3, 10); // Increase the vertical position based on row height
 
+            // Accumulate totals
+            totalAmountBilled += parseFloat(item.amount_billed) || 0;
+            totalGstAmount += parseFloat(item.gst_amount) || 0;
+            totalAmount += parseFloat(item.total_amount) || 0;
+
             // Ensure the content doesn't exceed the A4 page size
             if (yPos > pageHeight - 20) {
                 doc.addPage();
@@ -787,19 +812,53 @@
             }
         });
 
+        // Add the totals row at the end
+        const totalsLabel = "Total";
+        const totalsValues = [
+            "", "Total", "", "", "",
+            totalAmountBilled.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            totalGstAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "", ""
+        ];
+
+        // Draw the totals row
+        const totalLineCounts = [];
+        totalsValues.forEach((value, index) => {
+            const xPos = 5 + index * columnWidth;
+            const lineCount = wrapText(doc, value.toString(), xPos, yPos, columnWidth - 5);
+            totalLineCounts.push(lineCount);
+        });
+
+        // Get the maximum row height for the totals row
+        const totalRowHeight = Math.max(...totalLineCounts) + 2;
+        totalsValues.forEach((value, index) => {
+            const xPos = 5 + index * columnWidth;
+            doc.rect(xPos, yPos - 5, columnWidth, Math.max(totalRowHeight * 3, 10)); // Ensure minimum height of 10
+        });
+
+        yPos += Math.max(totalRowHeight * 3, 10); // Increase the vertical position based on row height
+
+        // Ensure the content doesn't exceed the A4 page size
+        if (yPos > pageHeight - 20) {
+            doc.addPage();
+            yPos = 20;
+        }
+
         const timestamp = new Date().toISOString().replace(/[-:T.]/g, "").slice(0, 14);
         const fileName = `${type.charAt(0).toUpperCase() + type.slice(1)}_report_${timestamp}.pdf`;
         doc.save(fileName);
     }
+
 
     function generateExcel(dataType, sales, quotations, columnToRemove = "user_id") {
         const wb = XLSX.utils.book_new();
         let data;
         let sheetName;
 
+        // Function to filter and format the data
         function filterFieldsAndFormatDates(data) {
             return data.map((item) => {
-                // Remove unwanted fields
                 const {
                     id,
                     user_role,
@@ -810,40 +869,63 @@
                     ...filteredItem
                 } = item;
 
-                // Remove the specific column if it exists
                 if (columnToRemove && filteredItem.hasOwnProperty(columnToRemove)) {
                     delete filteredItem[columnToRemove];
                 }
 
-                // Format date fields if they exist
+                // Format dates
                 if (filteredItem.date) {
-                    filteredItem.date = new Date(filteredItem.date)
-                        .toISOString()
-                        .split("T")[0];
+                    filteredItem.date = new Date(filteredItem.date).toISOString().split("T")[0];
                 }
                 if (filteredItem.next_renewal_date) {
-                    filteredItem.next_renewal_date = new Date(
-                        filteredItem.next_renewal_date
-                    )
-                        .toISOString()
-                        .split("T")[0];
+                    filteredItem.next_renewal_date = new Date(filteredItem.next_renewal_date).toISOString().split("T")[0];
                 }
 
                 return filteredItem;
             });
         }
 
-        if (dataType === "sales") {
+        // Select the data based on dataType (either "sales" or "quotations")
+        if (dataType === "sales" && sales && sales.length > 0) {
             data = filterFieldsAndFormatDates(sales);
             sheetName = "Sales";
-        } else if (dataType === "quotations") {
+        } else if (dataType === "quotations" && quotations && quotations.length > 0) {
             data = filterFieldsAndFormatDates(quotations);
             sheetName = "Quotations";
+        } else {
+            // If no data is available for the selected dataType, return immediately (no sheet to generate)
+            alert("Unable to export data into excel as there is no data.");
+            return;
         }
 
+        // Create the worksheet from the data
         const ws = XLSX.utils.json_to_sheet(data);
+
+        // Add the total row only if there's data to calculate totals for
+        if (data.length > 0) {
+            const totalRow = {
+                amount_billed: data.reduce((sum, item) => sum + (parseFloat(item.amount_billed) || 0), 0),
+                gst_amount: data.reduce((sum, item) => sum + (parseFloat(item.gst_amount) || 0), 0),
+                total_amount: data.reduce((sum, item) => sum + (parseFloat(item.total_amount) || 0), 0),
+            };
+
+            // Position for the total row
+            const totalRowIndex = data.length + 2;
+
+            // Insert the total row with labels and values
+            ws[`A${totalRowIndex}`] = { v: "Total", t: "s" };
+            ws[`F${totalRowIndex}`] = { v: totalRow.amount_billed, t: "n" };
+            ws[`G${totalRowIndex}`] = { v: totalRow.gst_amount, t: "n" };
+            ws[`H${totalRowIndex}`] = { v: totalRow.total_amount, t: "n" };
+
+            // Update the range to include the total row
+            ws['!ref'] = `A1:I${totalRowIndex}`;
+        }
+
+        // Append the sheet to the workbook
         XLSX.utils.book_append_sheet(wb, ws, sheetName);
 
+        // Generate the filename with a timestamp
         const timestamp = new Date()
             .toISOString()
             .replace(/[-:T.]/g, "")
@@ -851,6 +933,7 @@
 
         const filename = `${dataType}_report_${timestamp}.xlsx`;
 
+        // Write the Excel file
         XLSX.writeFile(wb, filename);
     }
 
@@ -908,19 +991,20 @@
   </div>
             `);
 
+        printWindow.document.write(`<div class="text-semibold text-2xl flex w-full justify-center items-center my-4" > ${sectionId.toLocaleUpperCase()} REPORT </div>`)
         printWindow.document.write("<style> table,th,td {border: 1px solid black} </style>")
         printWindow.document.write("<table>");
         printWindow.document.write("<tr>");
         printWindow.document.write("<th> Date </th>");
-        printWindow.document.write("<th> Products/Services </th>");
-        printWindow.document.write("<th> Addl. Description </th>");
-        printWindow.document.write("<th> Tally S.No (Batch) </th>");
+        printWindow.document.write("<th> Product Name </th>");
+        printWindow.document.write("<th> Description </th>");
+        printWindow.document.write("<th> Batch No </th>");
         printWindow.document.write("<th> Edition </th>");
         printWindow.document.write("<th> Amount Billed </th>");
-        printWindow.document.write("<th> GST </th>");
-        printWindow.document.write("<th> Total Amount Billed </th>");
-        printWindow.document.write("<th> Next Renewal Date </th>");
-        printWindow.document.write("<th> Remarks of Type </th>");
+        printWindow.document.write("<th> GST Amount </th>");
+        printWindow.document.write("<th> Total Amount </th>");
+        printWindow.document.write("<th> Next Renew Date </th>");
+        printWindow.document.write("<th> Remarks </th>");
         printWindow.document.write("</tr>");
 
         if (sectionId === "quotations") {
@@ -932,61 +1016,92 @@
                     } </td>`
                 );
                 printWindow.document.write(
-                    `<td> ${quotation?.product_and_services} </td>`
+                    `<td> ${quotation?.service_name} </td>`
                 );
                 printWindow.document.write(
-                    `<td> ${quotation?.additional_description} </td>`
+                    `<td> ${quotation?.description} </td>`
                 );
                 printWindow.document.write(
-                    `<td> ${quotation?.tally_serial_number} </td>`
+                    `<td> ${quotation?.serial_no} </td>`
                 );
                 printWindow.document.write(`<td> ${quotation?.edition} </td>`);
                 printWindow.document.write(
                     `<td> ${quotation?.amount_billed} </td>`
                 );
-                printWindow.document.write(`<td> ${quotation?.gst} </td>`);
+                printWindow.document.write(`<td> ${quotation?.gst_amount} </td>`);
                 printWindow.document.write(
-                    `<td> ${quotation?.total_amount_billed} </td>`
+                    `<td> ${quotation?.total_amount} </td>`
                 );
                 printWindow.document.write(
                     `<td> ${
-                        new Date(quotation.next_renewal_date)
-                            .toISOString()
-                            .split("T")[0]
+                        (quotation.next_renewal_date && quotation.next_renew_date !== undefined && quotation.next_renew_date !== null) ? new Date(quotation.next_renew_date).toISOString().split("T")[0] : ""
                     } </td>`
                 );
                 printWindow.document.write(`<td> ${quotation?.remarks} </td>`);
                 printWindow.document.write("</tr>");
+
             });
-        } else if ((selectionId = "sales")) {
+            if (quotations && quotations.length > 0) {
+                printWindow.document.write(`
+                        <tr ">
+                            <td></td>
+                            <td class="min-w-[8rem] font-semibold flex items-center justify-end">Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="font-semibold" > <%- amountQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
+                            <td class="font-semibold" ><%- gstQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                            <td class="font-semibold" ><%- totalQuotation.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                            <td class="min-w-[8rem]"></td>
+                            <td></td>
+                        </tr>
+                    `);
+            }
+        } else if (sectionId === "sales") {
             sales.map((sale, index) => {
                 printWindow.document.write("<tr>");
                 printWindow.document.write(
                     `<td> ${new Date(sale?.date).toISOString().split("T")[0]} </td>`
                 );
                 printWindow.document.write(
-                    `<td> ${sale?.product_and_services} </td>`
+                    `<td> ${sale?.service_name} </td>`
                 );
                 printWindow.document.write(
-                    `<td> ${sale?.additional_description} </td>`
+                    `<td> ${sale?.description} </td>`
                 );
                 printWindow.document.write(
-                    `<td> ${sale?.tally_serial_number} </td>`
+                    `<td> ${sale?.serial_no} </td>`
                 );
                 printWindow.document.write(`<td> ${sale?.edition} </td>`);
                 printWindow.document.write(`<td> ${sale?.amount_billed} </td>`);
-                printWindow.document.write(`<td> ${sale?.gst} </td>`);
+                printWindow.document.write(`<td> ${sale?.gst_amount} </td>`);
                 printWindow.document.write(
-                    `<td> ${sale?.total_amount_billed} </td>`
+                    `<td> ${sale?.total_amount} </td>`
                 );
                 printWindow.document.write(
                     `<td> ${
-                        new Date(sale.next_renewal_date).toISOString().split("T")[0]
+                        (sale.next_renewal_date && sale.next_renew_date !== undefined && sale.next_renew_date !== null) ? new Date(sale.next_renew_date).toISOString().split("T")[0] : ""
                     } </td>`
                 );
                 printWindow.document.write(`<td> ${sale?.remarks} </td>`);
                 printWindow.document.write("</tr>");
             });
+            if (sales && sales.length > 0) {
+                printWindow.document.write(`
+                        <tr ">
+                            <td></td>
+                            <td class="min-w-[8rem] font-semibold flex items-center justify-end">Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="font-semibold" > <%- amountSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), 2 %> </td>
+                            <td class="font-semibold" ><%- gstSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                            <td class="font-semibold" ><%- totalSales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                            <td class="min-w-[8rem]"></td>
+                            <td></td>
+                        </tr>
+                    `);
+            }
         }
         printWindow.document.write("</table>");
         printWindow.document.write("</body></html>");
