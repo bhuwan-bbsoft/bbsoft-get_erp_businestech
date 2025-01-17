@@ -1,21 +1,38 @@
-<nav class="bg-gray-800 p-4">
-    <div class="max-w-[95vw] mx-auto flex justify-between items-center ">
-        <a href="/" class="text-white text-2xl font-bold ">Sales & Quotation System</a>
-        <div class="space-x-4 flex">
-            <% if (typeof username !== 'undefined') { %>
-                <form method="POST" action="/set-financial-year">
-                    <select name="financial_year"  onchange="this.form.submit()" class="py-1 px-4 bg-transparent text-white">
-                        <% financialYears.forEach(financialyear => {  %>
-                            <option value="<%= financialyear.financial_year %>" <%= financialyear.financial_year === selectedFinancialYear ? 'selected' : '' %>  class="text-[#000]" > <%- financialyear.financial_year %> </option>
-                        <% }) %>
-                    </select>
-                </form>
-                <a href="/dashboard" class="text-white hover:text-gray-300">Dashboard</a>
-                <a href="/logout" class="text-white hover:text-gray-300">Logout</a>
-            <% } else { %>
-                <a href="/login" class="text-white hover:text-gray-300">Login</a>
-                <a href="/register" class="text-white hover:text-gray-300">Register</a>
-            <% } %>
-        </div>
-    </div>
+<style>
+    @media screen and (max-width: 639px) {
+        .navbar{
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            height: 50px;
+        }
+
+        .logout {
+            display: none;
+        }
+    }
+
+    .select-financial-year{
+        margin-right: 20px;
+    }
+</style>
+
+<nav class="bg-gray-800 w-full p-4 flex gap-4 justify-end items-center navbar">
+    <% if (typeof username !== 'undefined') { %>
+        <form method="POST" action="/set-financial-year" class="select-financial-year">
+            <select name="financial_year" onchange="this.form.submit()"
+                    class="py-1 px-4 bg-transparent text-white">
+                <% financialYears.forEach(financialyear => { %>
+                    <option value="<%= financialyear.financial_year %>" <%= financialyear.financial_year === selectedFinancialYear ? 'selected' : '' %>
+                            class="text-[#000]"> <%- financialyear.financial_year %> </option>
+                <% }) %>
+            </select>
+        </form>
+        <a href="/logout" class="text-white hover:text-gray-300 logout ">Logout</a>
+    <% } else { %>
+        <a href="/login" class="text-white hover:text-gray-300">Login</a>
+        <a href="/register" class="text-white hover:text-gray-300">Register</a>
+    <% } %>
 </nav>
+
+
