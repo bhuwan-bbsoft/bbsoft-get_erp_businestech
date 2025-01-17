@@ -27,6 +27,15 @@
                 }
             }
 
+            .user_dashboard_report{
+                div{
+                    padding: 5px;
+                }
+            }
+
+        }
+
+        @media screen and (max-width: 800px) {
             .user_dashboard_report {
                 div {
                     display: flex;
@@ -41,13 +50,18 @@
                         gap: 0px;
 
                         div {
-                            display: inline-block;
+                            display: flex;
+                            flex-direction: row;
+                            span:first-child{
+                                width: 20px;
+                            }
 
                         }
                     }
 
                     .second_report {
-                        display: inline-block;
+                        display: flex;
+                        flexdirection: row;
                         gap: 0px;
 
                         div {
@@ -60,7 +74,8 @@
                             .first_chart_report {
                                 display: flex;
                                 flex-direction: row;
-                                justify-content: space-between;
+                                gap: 20px;
+                                /*justify-content: space-between;*/
                                 align-items: center;
 
                                 div {
@@ -76,13 +91,31 @@
                             }
 
                             .second_chart_report {
-
+                                div{
+                                    display: flex;
+                                    flex-direction: row;
+                                }
                             }
                         }
 
                     }
                 }
 
+            }
+
+        }
+
+        @media screen and (max-width: 1080px) and (min-width: 640px) {
+            .admin-report-bar{
+                display: flex;
+                flex-direction: column;
+                h1{
+                    display: none;
+                }
+                .panel{
+                    width: 100%;
+                    margin-bottom: 30px;
+                }
             }
         }
 
@@ -99,7 +132,7 @@
 <div>
     <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
             type="button"
-            class="button_sizebar inline-flex items-center px-4 my-4 ms-3 text-sm text-gray-100 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+            class="button_sizebar inline-flex items-center px-4 my-4 ms-3 text-sm text-gray-100 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
         <span class="sr-only">Open sidebar</span>
         <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
              xmlns="http://www.w3.org/2000/svg">
@@ -109,10 +142,10 @@
     </button>
 
     <aside id="default-sidebar"
-           class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+           class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full lg:translate-x-0"
            aria-label="Sidebar">
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-            <a href="/" class="text-2xl font-bold ">Resource Dashboard</a>
+            <a href="/dashboard" class="text-2xl font-bold ">Resource Dashboard</a>
             <ul class="space-y-1.5 mt-5 font-medium">
                 <% if( currentUser.user_level == 2){ %>
                     <li onclick="openEditAccountModal()"
@@ -193,7 +226,7 @@
         </div>
     </aside>
 
-    <div class=" sm:ml-64">
+    <div class=" lg:ml-64">
         <%- include('partials/navbar') %>
         <div class=" border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
             <div class="mx-auto px-4 py-8 ">
@@ -353,7 +386,7 @@
                             <div class="flex  justify-end">
                                 <div class="space-x-1 mb-3">
                                     <button
-                                            onclick="generatePDF(<%= JSON.stringify(sales) %>, 'sales',  company )"
+                                            onclick="exportToPDF('Sales','sales_table',  company )"
                                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
                                     >
                                         <svg
@@ -435,7 +468,6 @@
                                         </svg>
                                     </button>
 
-                                    <button onclick="exportToPDF('Sales','sales_table',company)">Print</button>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
@@ -518,7 +550,7 @@
                                 <div class="space-x-1 mb-3">
                                     <!-- PDF Button -->
                                     <button
-                                            onclick="generatePDF(<%= JSON.stringify(quotations) %>, 'quotation', company)"
+                                            onclick="exportToPDF('Quotations','quotation_table', company)"
                                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
                                     >
                                         <svg
@@ -600,7 +632,6 @@
                                             />
                                         </svg>
                                     </button>
-                                    <button onclick="exportToPDF('Quotations','quotation_table',company)">Print</button>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
@@ -676,70 +707,6 @@
 
 </div>
 
-<script>
-    function exportToPDF(name, tableId, company) {
-        const {jsPDF} = window.jspdf;
-        const doc = new jsPDF();
-
-        const pageWidth = doc.internal.pageSize.width;
-
-
-        doc.setFontSize(16);
-        doc.text(company?.name.trim(), 14, 20);
-        doc.setFontSize(10);
-        doc.text(`GSTIN:  ${company?.gstin.trim()} `, 14, 25);
-        doc.text(`PAN No.:  ${company?.pan_number.trim()} `, 14, 30);
-
-
-        doc.text(`${company?.website.trim()}`, 135, 20);
-        doc.text(`${company?.mobile.trim()}`,135,25);
-        doc.text(`${company?.address.trim()}`,135,30);
-        doc.text(`${company?.city.trim()}, ${company?.state.trim()}, ${company?.country.trim()}`,135,35);
-
-        doc.setFontSize(15);
-        const reportTitle = `${name.charAt(0).toUpperCase() + name.slice(1)} Report`;
-        doc.text(reportTitle, pageWidth / 2 - doc.getTextWidth(reportTitle) / 2, 45);
-
-        doc.setFontSize(6);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 3);
-        doc.setFontSize(12);
-
-        const rows = Array.from(document.querySelectorAll(`#${tableId} tbody tr`)).map(row => {
-            const cells = row.querySelectorAll('td');
-            return Array.from(cells).map(cell => cell.innerText.trim());
-        });
-
-
-        doc.autoTable({
-            head: [['Date', 'Service Name', 'Description', 'Serial Number', 'Edition', 'Amount Billed', 'GST Amount', 'Total Amount', 'Next Renew Date', 'Remarks']],
-            body: rows,
-            startY: 55,
-            theme: 'grid',
-            styles: {fontSize: 8, halign: 'center'},
-            columnStyles: {
-                0: {halign: 'center'},  // First column centered
-                1: {halign: 'center'},
-                2: {halign: 'center'},
-                3: {halign: 'center'},
-                4: {halign: 'left'},    // Align 'Customer Name' to the left
-                5: {halign: 'center'},
-                6: {halign: 'right'},
-                7: {halign: 'right'},
-                8: {halign: 'center'},
-                9: {halign: 'center'}
-            },
-            didParseCell: function (data) {
-                if (data.row.index === rows.length - 1) {
-                    data.cell.styles.fontStyle = 'bold';
-                }
-            }
-        });
-
-        const timestamp = new Date().toISOString().replace(/[-:T.]/g, "").slice(0, 14);
-        const fileName = `${name.charAt(0).toUpperCase() + name.slice(1)}_report_${timestamp}.pdf`;
-        doc.save(fileName);
-    }
-</script>
 
 <% if (typeof errorMessage !== 'undefined') { %>
     <div class="fixed top-2 left-1/2">
@@ -921,188 +888,70 @@
 <script>
     const company = <%- JSON.stringify(company) %>;
 
-    // function generatePDF(data, type, company) {
-    //     const {jsPDF} = window.jspdf;
-    //     const doc = new jsPDF();
-    //
-    //     if (data.length === 0) {
-    //         alert("Unable to export data into PDF as there is no data.");
-    //         return; // Exit the function if no data is present
-    //     }
-    //
-    //     const pageWidth = doc.internal.pageSize.width;
-    //     const pageHeight = doc.internal.pageSize.height;
-    //
-    //     const currentDate = new Date();
-    //     const formattedDate = currentDate.toISOString().split("T")[0];
-    //
-    //     doc.setFontSize(12);
-    //     doc.text(company.name, (pageWidth - doc.getTextWidth(company.name)) / 2, 20);
-    //     doc.text(company.address, (pageWidth - doc.getTextWidth(company.address)) / 2, 25);
-    //     doc.text(`City: ${company.city}, State: ${company.state}, Country: ${company.country}`,
-    //         (pageWidth - 70) / 2, 30);
-    //     doc.text(`GSTIN: ${company.gstin}, Email: ${company.email} , Mobile: ${company.mobile}`,
-    //         (pageWidth - 150) / 2, 35);
-    //     doc.text(`Website: ${company.website}, PAN: ${company.pan_number}`, (pageWidth - 70) / 2, 40);
-    //
-    //     const reportTitle = `${type.charAt(0).toUpperCase() + type.slice(1)} Report`;
-    //     doc.setFontSize(12);
-    //     doc.text(reportTitle, pageWidth / 2 - doc.getTextWidth(reportTitle) / 2, 55);
-    //
-    //     const header = [
-    //         "Date", "Service Name", "Description", "Serial No", "Edition",
-    //         "Amount Billed", "GST Amount", "Total Amount", "Next Renew Date", "Remarks"
-    //     ];
-    //
-    //     doc.setFontSize(8);
-    //     const columnWidth = 20;
-    //     const rowHeight = 10;
-    //     let yPos = 65;
-    //
-    //     // Function to wrap text based on column width and return the number of lines
-    //     function wrapText(doc, text, xPos, yPos, maxWidth) {
-    //         const words = text.split(' ');
-    //         let line = '';
-    //         let lineCount = 1; // Start with 1 line
-    //
-    //         const lineHeight = 3; // Space between lines
-    //         words.forEach((word) => {
-    //             const testLine = line ? line + ' ' + word : word;
-    //             const testWidth = doc.getTextWidth(testLine);
-    //
-    //             if (testWidth <= maxWidth) {
-    //                 line = testLine;
-    //             } else {
-    //                 doc.text(line, xPos, yPos);
-    //                 yPos += lineHeight;
-    //                 lineCount++; // Increment the line count
-    //                 line = word; // Start a new line with the current word
-    //             }
-    //         });
-    //         doc.text(line, xPos, yPos); // Draw the last line
-    //         return lineCount; // Return the number of lines used
-    //     }
-    //
-    //     // Dynamic Height Calculation for Headers
-    //     const headerLineCounts = [];
-    //     header.forEach((column, index) => {
-    //         const xPos = 5 + index * columnWidth;
-    //         const lineCount = wrapText(doc, column, xPos, yPos + 5, columnWidth - 5); // Adjust for wrapping
-    //         headerLineCounts.push(lineCount); // Store the line count for each header column
-    //     });
-    //
-    //     // Get the maximum row height for the header
-    //     const headerRowHeight = Math.max(...headerLineCounts) + 2;
-    //
-    //     // Draw table header with dynamic height based on wrapped text
-    //     header.forEach((column, index) => {
-    //         const xPos = 5 + index * columnWidth;
-    //         doc.rect(xPos, yPos, columnWidth, Math.max(headerRowHeight * 3, 10)); // Ensure minimum height of 10
-    //     });
-    //
-    //     yPos += Math.max(headerRowHeight * 3, 10) + 5; // Space after header
-    //
-    //     // Format the date and next renewal date
-    //     const formatDate = (dateString) => {
-    //         const date = new Date(dateString);
-    //         return (
-    //             date.getFullYear() +
-    //             "-" +
-    //             ("0" + (date.getMonth() + 1)).slice(-2) +
-    //             "-" +
-    //             ("0" + date.getDate()).slice(-2)
-    //         ); // yyyy-mm-dd format
-    //     };
-    //
-    //     let totalAmountBilled = 0;
-    //     let totalGstAmount = 0;
-    //     let totalAmount = 0;
-    //
-    //     doc.setFontSize(8);
-    //     data.forEach((item) => {
-    //         let rowHeight = 0; // Track the maximum row height for the current data row
-    //
-    //         // Format date fields
-    //         const formattedDateValue = formatDate(item.date);
-    //         const formattedNextRenewalDate = formatDate(item.next_renew_date);
-    //
-    //         const rowLineCounts = [];
-    //         // Calculate the number of lines for each column in the current data row
-    //         header.forEach((column, index) => {
-    //             const cellValue =
-    //                 column === "Date" ? formattedDateValue :
-    //                     column === "Next Renew Date" ? (item.next_renew_date ? formattedNextRenewalDate : "") :
-    //                         item[column.toLowerCase().replace(" ", "_")];
-    //
-    //             const xPos = 5 + index * columnWidth;
-    //             const lineCount = wrapText(doc, cellValue ? cellValue.toString() : "-", xPos, yPos, columnWidth - 5);
-    //
-    //             rowLineCounts.push(lineCount); // Store line counts for data row columns
-    //         });
-    //
-    //         // Get the maximum row height for the current data row
-    //         rowHeight = Math.max(...rowLineCounts) + 2;
-    //
-    //         // Draw the rectangles for the data row with dynamic height
-    //         header.forEach((column, index) => {
-    //             const xPos = 5 + index * columnWidth;
-    //             doc.rect(xPos, yPos - 5, columnWidth, Math.max(rowHeight * 3, 10)); // Ensure minimum height of 10
-    //         });
-    //
-    //         yPos += Math.max(rowHeight * 3, 10); // Increase the vertical position based on row height
-    //
-    //         // Accumulate totals
-    //         totalAmountBilled += parseFloat(item.amount_billed) || 0;
-    //         totalGstAmount += parseFloat(item.gst_amount) || 0;
-    //         totalAmount += parseFloat(item.total_amount) || 0;
-    //
-    //         // Ensure the content doesn't exceed the A4 page size
-    //         if (yPos > pageHeight - 20) {
-    //             doc.addPage();
-    //             yPos = 20;
-    //         }
-    //     });
-    //
-    //     // Add the totals row at the end
-    //     const totalsLabel = "Total";
-    //     const totalsValues = [
-    //         "", "Total", "", "", "",
-    //         totalAmountBilled.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-    //         totalGstAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-    //         totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-    //         "", ""
-    //     ];
-    //
-    //     // Draw the totals row
-    //     const totalLineCounts = [];
-    //     totalsValues.forEach((value, index) => {
-    //         const xPos = 5 + index * columnWidth;
-    //         const lineCount = wrapText(doc, value.toString(), xPos, yPos, columnWidth - 5);
-    //         totalLineCounts.push(lineCount);
-    //     });
-    //
-    //     // Get the maximum row height for the totals row
-    //     const totalRowHeight = Math.max(...totalLineCounts) + 2;
-    //     totalsValues.forEach((value, index) => {
-    //         const xPos = 5 + index * columnWidth;
-    //         doc.rect(xPos, yPos - 5, columnWidth, Math.max(totalRowHeight * 3, 10)); // Ensure minimum height of 10
-    //     });
-    //
-    //     yPos += Math.max(totalRowHeight * 3, 10); // Increase the vertical position based on row height
-    //
-    //     // Ensure the content doesn't exceed the A4 page size
-    //     if (yPos > pageHeight - 20) {
-    //         doc.addPage();
-    //         yPos = 20;
-    //     }
-    //
-    //     const timestamp = new Date().toISOString().replace(/[-:T.]/g, "").slice(0, 14);
-    //     const fileName = `${type.charAt(0).toUpperCase() + type.slice(1)}_report_${timestamp}.pdf`;
-    //     doc.save(fileName);
-    // }
+    function exportToPDF(name, tableId, company) {
+        const {jsPDF} = window.jspdf;
+        const doc = new jsPDF();
+
+        const pageWidth = doc.internal.pageSize.width;
 
 
-    function generateExcel(dataType, sales, quotations, columnToRemove = ["user_id", "voucher_number"]) {
+        doc.setFontSize(16);
+        doc.text(company?.name.trim(), 14, 20);
+        doc.setFontSize(10);
+        doc.text(`GSTIN:  ${company?.gstin.trim()} `, 14, 25);
+        doc.text(`PAN No.:  ${company?.pan_number.trim()} `, 14, 30);
+
+
+        doc.text(`${company?.website.trim()}`, 135, 20);
+        doc.text(`${company?.mobile.trim()}`,135,25);
+        doc.text(`${company?.address.trim()}`,135,30);
+        doc.text(`${company?.city.trim()}, ${company?.state.trim()}, ${company?.country.trim()}`,135,35);
+
+        doc.setFontSize(15);
+        const reportTitle = `${name.charAt(0).toUpperCase() + name.slice(1)} Report`;
+        doc.text(reportTitle, pageWidth / 2 - doc.getTextWidth(reportTitle) / 2, 45);
+
+        doc.setFontSize(6);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 3);
+        doc.setFontSize(12);
+
+        const rows = Array.from(document.querySelectorAll(`#${tableId} tbody tr`)).map(row => {
+            const cells = row.querySelectorAll('td');
+            return Array.from(cells).map(cell => cell.innerText.trim());
+        });
+
+
+        doc.autoTable({
+            head: [['Date', 'Service Name', 'Description', 'Serial Number', 'Edition', 'Amount Billed', 'GST Amount', 'Total Amount', 'Next Renew Date', 'Remarks']],
+            body: rows,
+            startY: 55,
+            theme: 'grid',
+            styles: {fontSize: 8, halign: 'center'},
+            columnStyles: {
+                0: {halign: 'center'},  // First column centered
+                1: {halign: 'center'},
+                2: {halign: 'center'},
+                3: {halign: 'center'},
+                4: {halign: 'left'},    // Align 'Customer Name' to the left
+                5: {halign: 'center'},
+                6: {halign: 'right'},
+                7: {halign: 'right'},
+                8: {halign: 'center'},
+                9: {halign: 'center'}
+            },
+            didParseCell: function (data) {
+                if (data.row.index === rows.length - 1) {
+                    data.cell.styles.fontStyle = 'bold';
+                }
+            }
+        });
+
+        const timestamp = new Date().toISOString().replace(/[-:T.]/g, "").slice(0, 14);
+        const fileName = `${name.charAt(0).toUpperCase() + name.slice(1)}_report_${timestamp}.pdf`;
+        doc.save(fileName);
+    }
+
+    function generateExcel(dataType, sales, quotations, columnToRemove = "user_id") {
         const wb = XLSX.utils.book_new();
         let data;
         let sheetName;
@@ -1245,7 +1094,8 @@
                     </div>
               </div>`);
 
-        printWindow.document.write(`<div class="text-semibold text-2xl flex w-full justify-center items-center my-4" > ${sectionId.toLocaleUpperCase()} REPORT </div>`)
+        printWindow.document.write("<style> .report_heading{ font-size: 20px; width: 100%; display: flex; justify-content: center; align-items: center; font-weight: 600; margin-top: 20px; margin-bottom: 20px; } </style>")
+        printWindow.document.write(`<div class="report_heading" > ${sectionId.toLocaleUpperCase()} REPORT </div>`)
         printWindow.document.write("<style> table,th,td {border: 1px solid black; border-collapse: collapse;} </style>")
         printWindow.document.write("<style> .table_right{text-align: right} </style>")
         printWindow.document.write("<table>");
